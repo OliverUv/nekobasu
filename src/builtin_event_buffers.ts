@@ -34,12 +34,12 @@ export function immediate<E>() {
   // that the on_feed and on_flush tie-ins will let
   // us abort before these would be used.
   return EB.create_event_buffer<E, E>(<any>{
-    on_flush: () => {
+    before_flush: () => {
       return N.ShouldAbort.yes;
     },
-    on_feed: (event:E, self:EB.EventBufferImpl<E,E>) => {
+    before_feed: (event:E, self:EB.EventBufferImpl<E,E>) => {
       self.dispatch(event);
       return N.ShouldAbort.yes;
-    }
+    },
   });
 }

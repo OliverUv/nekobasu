@@ -73,8 +73,8 @@ export class EventBufferImpl<E, R=E> extends SimpleEventDispatcher<R> implements
   }
 
   public flush() {
-    if (this.spec.on_flush != undefined) {
-      if (this.spec.on_flush(this) == N.ShouldAbort.yes) { return; }
+    if (this.spec.before_flush != undefined) {
+      if (this.spec.before_flush(this) == N.ShouldAbort.yes) { return; }
     }
     if (this.dirty == false) { return; }
     this.dispatch(this.reduced_value);
@@ -82,8 +82,8 @@ export class EventBufferImpl<E, R=E> extends SimpleEventDispatcher<R> implements
   }
 
   public feed(event:E) {
-    if (this.spec.on_feed != undefined) {
-      if (this.spec.on_feed(event, this) == N.ShouldAbort.yes) { return; }
+    if (this.spec.before_feed != undefined) {
+      if (this.spec.before_feed(event, this) == N.ShouldAbort.yes) { return; }
     }
     // TODO Provide upstream patch to make it possible to get the
     // number of subscriptions that a DispatcherBase has

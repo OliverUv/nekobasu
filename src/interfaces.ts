@@ -21,8 +21,8 @@ export enum ShouldAbort {
 export interface EventBufferSpec<E, R=E> {
   reducer:Reducer<E, R>;
   start_value:R;
-  on_feed?:OnFeed<E, R>;
-  on_flush?:OnFlush<E, R>;
+  before_feed?:OnFeed<E, R>;
+  before_flush?:OnFlush<E, R>;
 }
 
 export interface EventBuffer<E, R=E> extends ISimpleEvent<R> {
