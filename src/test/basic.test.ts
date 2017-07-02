@@ -51,8 +51,8 @@ test(async function two_signals(t) {
     first: nbus.builtin.signal(),
     second: nbus.builtin.signal(),
   };
-  event_bus.first.use_single_buffer('immediate');
-  event_bus.second.use_all_buffers(); // all modes enabled at the same time, default
+  event_bus.first.neko.use_single_buffer('immediate');
+  event_bus.second.neko.use_all_buffers(); // all modes enabled at the same time, default
 
   event_bus.first.immediate.sub(() => t.pass());
   event_bus.first.count.sub(() => t.fail());

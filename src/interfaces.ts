@@ -41,17 +41,21 @@ export interface EventBufferDict<E> {
 
 export interface Neko<E, B> {
   dispatch(event:E) : void;
-  use_single_buffer(buffer_name:B) : void;
-  use_all_buffers() : void;
-  get_current_used_buffer() : B | undefined;
   flush() : void;
+  neko:{
+    use_single_buffer(buffer_name:B) : void;
+    use_all_buffers() : void;
+    get_current_used_buffer() : B | undefined;
+  };
 }
 
 export interface SignalNeko<B> {
-  signal() : void;
-  use_single_buffer(buffer_name:B) : void;
-  use_all_buffers() : void;
-  get_current_used_buffer() : B | undefined;
   flush() : void;
+  signal() : void;
+  neko:{
+    use_single_buffer(buffer_name:B) : void;
+    use_all_buffers() : void;
+    get_current_used_buffer() : B | undefined;
+  };
 }
 

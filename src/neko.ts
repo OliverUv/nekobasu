@@ -6,9 +6,7 @@ const RESERVED_NAMES = [
   'signal',
   'dispatch',
   'flush',
-  'use_single_buffer',
-  'use_all_buffers',
-  'get_current_used_buffer',
+  'neko',
 ];
 
 export function create_neko<E, EBD extends N.EventBufferDict<E>>(buffers:EBD) : EBD & N.Neko<E, keyof EBD> {
@@ -44,9 +42,11 @@ export function create_neko<E, EBD extends N.EventBufferDict<E>>(buffers:EBD) : 
   let neko:N.Neko<E, keyof EBD> = {
     dispatch,
     flush,
-    use_single_buffer,
-    use_all_buffers,
-    get_current_used_buffer,
+    neko: {
+      get_current_used_buffer,
+      use_all_buffers,
+      use_single_buffer,
+    },
   };
 
   return {
@@ -92,9 +92,11 @@ export function create_signal_neko<EBD extends N.EventBufferDict<undefined>>(buf
   let neko:N.SignalNeko<keyof EBD> = {
     flush,
     signal,
-    use_single_buffer,
-    use_all_buffers,
-    get_current_used_buffer,
+    neko: {
+      get_current_used_buffer,
+      use_all_buffers,
+      use_single_buffer,
+    },
   };
 
   return {
