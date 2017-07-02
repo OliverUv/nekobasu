@@ -63,6 +63,7 @@ import * as N from './interfaces';
 export class EventBufferImpl<E, R=E> extends SimpleEventDispatcher<R> implements N.EventBuffer<E, R> {
   private start_value:R;
   private reduced_value:R;
+  private dirty:boolean;
   private spec:N.EventBufferSpec<E, R>;
 
   public constructor(spec:N.EventBufferSpec<E, R>) {
@@ -73,28 +74,27 @@ export class EventBufferImpl<E, R=E> extends SimpleEventDispatcher<R> implements
 
   public flush() {
     if (this.spec.on_flush != undefined) {
-      if (this.spec.on_flush(this) == N.ShouldAbort.yes) {
-        return;
-      }
+      if (this.spec.on_flush(this) == N.ShouldAbort.yes) { return; }
     }
+    if (this.dirty == false) { return; }
     this.dispatch(this.reduced_value);
     this.clear();
   }
 
   public feed(event:E) {
     if (this.spec.on_feed != undefined) {
-      if (this.spec.on_feed(event, this) == N.ShouldAbort.yes) {
-        return;
-      }
+      if (this.spec.on_feed(event, this) == N.ShouldAbort.yes) { return; }
     }
     // TODO Provide upstream patch to make it possible to get the
     // number of subscriptions that a DispatcherBase has
     if ((<any>this)._subscriptions.length == 0) { return; }
     this.reduced_value = this.spec.reducer(this.reduced_value, event);
+    this.dirty = true;
   }
 
   public clear() : void {
     this.reduced_value = _.cloneDeep(this.spec.start_value);
+    this.dirty = false;
   }
 }
 

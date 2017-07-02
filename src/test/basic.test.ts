@@ -87,6 +87,19 @@ test(async function lazy(t) {
   event_bus.event_name.immediate.sub(() => t.fail());
 });
 
+test(async function flush_never_dispatches_without_feed(t) {
+  t.plan(0);
+
+  let event_bus = {
+    event_name: nbus.builtin.signal(),
+  };
+
+  event_bus.event_name.signal();
+  event_bus.event_name.count.sub(() => t.fail());
+  event_bus.event_name.immediate.sub(() => t.fail());
+  event_bus.event_name.flush();
+});
+
 test(async function simple_event(t) {
   t.plan(3);
 
