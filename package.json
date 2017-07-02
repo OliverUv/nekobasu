@@ -1,0 +1,42 @@
+{
+  "name": "nekobasu",
+  "version": "0.0.1",
+  "description": "Configurable event bus that can buffer and reduce events",
+  "main": "./build/index.js",
+  "types": "./build/index.d.ts",
+  "scripts": {
+    "clean": "rm -rf ./build",
+    "build": "tsc --project tsconfig.json",
+    "dev_build": "tsc --watch --pretty --noEmitOnError",
+    "lint": "tslint --type-check --project tsconfig.json",
+    "lint_fix": "tslint --fix --type-check --project tsconfig.json",
+    "test": "ava --verbose",
+    "dev_test": "ava --watch --verbose"
+  },
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/OliverUv/nekobasu.git"
+  },
+  "keywords": [
+    "typescript",
+    "ts",
+    "eventbus",
+    "event bus",
+    "event",
+    "buffer",
+    "reduce"
+  ],
+  "author": "Oliver Uvman <oliver@uvman.se> (http://vvv.uvman.se/)",
+  "license": "Apache-2.0",
+  "devDependencies": {
+    "ava": "^0.18.2",
+    "tslint": "^3.15.1",
+    "typescript": "^2.4.1"
+  },
+  "dependencies": {
+    "@types/lodash.clonedeep": "^4.5.2",
+    "lodash": "^4.17.4",
+    "lodash.clonedeep": "^4.5.0",
+    "strongly-typed-events": "^1.0.1"
+  }
+}
