@@ -46,27 +46,20 @@ import * as N from './interfaces';
 //   n_events:number;
 // }
 
-// // Will return all events dispatched during the buffering period
-// export interface ListBuffered<E> {
-//   events:E[];
-// }
-
-// export interface CustomReducerBuffered<E, R> {
-//   reduced_events:R;
-// }
-
-
 /**
  * For reducing a stream of events to a single value to be
  * emitted on flush. `start_value` must be `_.cloneDeep`able.
  */
-export class EventBufferImpl<E, R=E> extends SimpleEventDispatcher<R> implements N.EventBuffer<E, R> {
-  private start_value:R;
-  private reduced_value:R;
+export class EventBufferImpl<E, R=E, S=R> extends SimpleEventDispatcher<R> implements N.EventBuffer<E, R> {
+  // If dirty is true, we know reduced_value has been
+  // changed. We cast to <R> instead of checking that it
+  // isn't undefined, because it might be that undefined
+  // is an acceptable R value to the library user.
+  private reduced_value?:R;
   private dirty:boolean;
-  private spec:N.EventBufferSpec<E, R>;
+  private spec:N.EventBufferSpec<E, R, S>;
 
-  public constructor(spec:N.EventBufferSpec<E, R>) {
+  public constructor(spec:N.EventBufferSpec<E, R, S>) {
     super();
     this.spec = spec;
     this.clear();
@@ -77,7 +70,7 @@ export class EventBufferImpl<E, R=E> extends SimpleEventDispatcher<R> implements
       if (this.spec.before_flush(this) == N.ShouldAbort.yes) { return; }
     }
     if (this.dirty == false) { return; }
-    this.dispatch(this.reduced_value);
+    this.dispatch(<R>this.reduced_value);
     this.clear();
   }
 
@@ -85,19 +78,32 @@ export class EventBufferImpl<E, R=E> extends SimpleEventDispatcher<R> implements
     if (this.spec.before_feed != undefined) {
       if (this.spec.before_feed(event, this) == N.ShouldAbort.yes) { return; }
     }
-    // TODO Provide upstream patch to make it possible to get the
-    // number of subscriptions that a DispatcherBase has
+    // TODO Provide upstream patch to make it possible to
+    // get the number of subscriptions that a
+    // DispatcherBase has
     if ((<any>this)._subscriptions.length == 0) { return; }
-    this.reduced_value = this.spec.reducer(this.reduced_value, event);
+    if (this.dirty == false) {
+      this.reduced_value = this.spec.reducer(
+          _.cloneDeep(this.spec.start_value),
+          event);
+    } else {
+      this.reduced_value = this.spec.reducer(
+          <R>this.reduced_value,
+          event);
+    }
     this.dirty = true;
   }
 
   public clear() : void {
-    this.reduced_value = _.cloneDeep(this.spec.start_value);
+    // Though we know the reduced_value parameter
+    // won't be used before it's overwritten by a 
+    // proper value, we make sure to release our
+    // reference to it in case it's a large object.
+    this.reduced_value = undefined;
     this.dirty = false;
   }
 }
 
-export function create_event_buffer<E, R=E>(spec:N.EventBufferSpec<E, R>) : N.EventBuffer<E, R> {
-  return new EventBufferImpl(spec);
+export function create_event_buffer<E, R=E, S=R>(spec:N.EventBufferSpec<E, R, S>) : N.EventBuffer<E, R> {
+  return new EventBufferImpl<E, R, S>(spec);
 }

@@ -9,20 +9,24 @@ import {
 
 import { EventBufferImpl } from './event_buffer'; // use type only
 
-export type Reducer<E, R=E> = (acc:R, next:E) => R;
-export type OnFeed<E, R=E> = (event:E, self:EventBufferImpl<E, R>) => ShouldAbort;
-export type OnFlush<E, R=E> = (self:EventBufferImpl<E, R>) => ShouldAbort;
+export type Reducer<E, R=E, S=R> = (acc:R|S, next:E) => R;
+export type OnFeed<E, R=E, S=R> = (event:E, self:EventBufferImpl<E, R, S>) => ShouldAbort;
+export type OnFlush<E, R=E, S=R> = (self:EventBufferImpl<E, R, S>) => ShouldAbort;
 
 export enum ShouldAbort {
   yes,
   no,
 }
 
-export interface EventBufferSpec<E, R=E> {
-  reducer:Reducer<E, R>;
-  start_value:R;
-  before_feed?:OnFeed<E, R>;
-  before_flush?:OnFlush<E, R>;
+// E = event type
+// R = reduction result type
+// S = reduction start value type
+
+export interface EventBufferSpec<E, R=E, S=R> {
+  reducer:Reducer<E, R, S>;
+  start_value:S;
+  before_feed?:OnFeed<E, R, S>;
+  before_flush?:OnFlush<E, R, S>;
 }
 
 export interface EventBuffer<E, R=E> extends ISimpleEvent<R> {

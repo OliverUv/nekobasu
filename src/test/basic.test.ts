@@ -87,7 +87,7 @@ test(async function lazy(t) {
   event_bus.event_name.immediate.sub(() => t.fail());
 });
 
-test(async function flush_never_dispatches_without_feed(t) {
+test(async function flush_does_not_dispatches_without_feed(t) {
   t.plan(0);
 
   let event_bus = {
@@ -101,14 +101,14 @@ test(async function flush_never_dispatches_without_feed(t) {
 });
 
 test(async function simple_event(t) {
-  t.plan(3);
+  t.plan(4);
 
   let event_bus = {
     cool_numbers: nbus.builtin.event<number>(),
   };
 
   event_bus.cool_numbers.immediate.one((ev:number) => t.is(ev, 5));
-  // event_bus.cool_numbers.last.sub((ev:number) => t.is(ev, 10));
+  event_bus.cool_numbers.last.sub((ev:number) => t.is(ev, 10));
   event_bus.cool_numbers.list.sub((ev:number[]) => t.deepEqual(ev, [5, 10]));
   event_bus.cool_numbers.dispatch(5);
 
