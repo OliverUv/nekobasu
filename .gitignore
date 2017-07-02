@@ -1,0 +1,22 @@
+# vim
+*~
+*.sw?
+
+# generic editing tools
+tags
+
+# mac
+*.DS_Store
+
+# wandows
+.vscode/
+
+# build tools
+node_modules/
+
+# logfiles
+*.log
+.idea/
+
+# build artifacts
+build/

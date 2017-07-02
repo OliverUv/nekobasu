@@ -1,0 +1,26 @@
+# vim
+*~
+*.sw?
+
+# generic editing tools
+tags
+
+# mac
+*.DS_Store
+
+# wandows
+.vscode/
+
+# build tools
+node_modules/
+
+# logfiles
+*.log
+.idea/
+
+# don't ignore all build artifacts !!
+# build/
+build/test/
+
+# but do ignore
+yarn.lock
