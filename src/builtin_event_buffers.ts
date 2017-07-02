@@ -11,15 +11,27 @@ export function list<E>() {
   });
 }
 
-// export function last<E>() {
-//   return EB.create_event_buffer<E, E>({
+// export interface LastInstrumentedBuffer<E> {
+//   last_event:E;
+// }
+
+// export function last_instrumented<E>() {
+//   return EB.create_event_buffer<E, LastInstrumentedBuffer<E>, undefined>({
 //     reducer: (acc, next) => {
-//       acc.push(next);
-//       return acc;
+//       return {last_event: next};
 //     },
-//     start_value: [],
+//     start_value: undefined,
 //   });
 // }
+
+export function last<E>() {
+  return EB.create_event_buffer<E, E, undefined>({
+    reducer: (acc, next) => {
+      return next;
+    },
+    start_value: undefined,
+  });
+}
 
 export function count() {
   return EB.create_event_buffer<any, number>({

@@ -5,8 +5,9 @@ export { event_buffer }
 
 export function event<E>() {
   let spec = {
-    list: event_buffer.list<E>(),
     immediate: event_buffer.immediate<E>(),
+    last: event_buffer.last<E>(),
+    list: event_buffer.list<E>(),
   };
 
   return create_neko<E, typeof spec>(spec);
