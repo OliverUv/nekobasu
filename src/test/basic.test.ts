@@ -54,8 +54,10 @@ test(async function two_signals(t) {
   event_bus.first.use_single_buffer('immediate');
   event_bus.second.use_all_buffers(); // all modes enabled at the same time, default
 
-  event_bus.first.immediate.one(() => t.pass());
+  event_bus.first.immediate.sub(() => t.pass());
+  event_bus.first.count.sub(() => t.fail());
   event_bus.first.signal();
+  event_bus.first.flush();
 
   let n_counted_signals = 0;
   let n_immediate_signals = 0;
