@@ -3,7 +3,7 @@ import * as _ from 'lodash';
 import * as N from './interfaces';
 
 const RESERVED_NAMES = [
-  'neko',
+  '_meta',
 ];
 
 export function create<ND extends N.NekoDict>(nekos:ND) : ND & N.EventBus<keyof ND> {
@@ -16,7 +16,7 @@ export function create<ND extends N.NekoDict>(nekos:ND) : ND & N.EventBus<keyof 
   })
 
   function clear() {
-    _.forEach(neko_names, (n) => { nekos[n].neko.clear(); });
+    _.forEach(neko_names, (n) => { nekos[n]._meta.clear(); });
   }
 
   function flush() {
@@ -24,7 +24,7 @@ export function create<ND extends N.NekoDict>(nekos:ND) : ND & N.EventBus<keyof 
   }
 
   let event_bus:N.EventBus<keyof ND> = {
-    neko:{
+    _meta:{
       clear,
       flush,
     }

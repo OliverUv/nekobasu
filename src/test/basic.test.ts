@@ -24,7 +24,7 @@ test(async function one_signal(t) {
   };
 
   event_bus.event_name.immediate.one(() => t.pass());
-  event_bus.event_name.signal();
+  event_bus.event_name.send();
 });
 
 test(async function two_categories(t) {
@@ -41,7 +41,7 @@ test(async function two_categories(t) {
 
   event_bus.cat_one.event_name.immediate.one(() => t.pass());
   event_bus.cat_two.event_name.immediate.one(() => t.fail());
-  event_bus.cat_one.event_name.signal();
+  event_bus.cat_one.event_name.send();
 });
 
 test(async function two_signals(t) {
@@ -51,12 +51,12 @@ test(async function two_signals(t) {
     first: nbus.builtin.signal(),
     second: nbus.builtin.signal(),
   };
-  event_bus.first.neko.use_single_buffer('immediate');
-  event_bus.second.neko.use_all_buffers(); // all modes enabled at the same time, default
+  event_bus.first._meta.use_single_buffer('immediate');
+  event_bus.second._meta.use_all_buffers(); // all modes enabled at the same time, default
 
   event_bus.first.immediate.sub(() => t.pass());
   event_bus.first.count.sub(() => t.fail());
-  event_bus.first.signal();
+  event_bus.first.send();
   event_bus.first.flush();
 
   let n_counted_signals = 0;
@@ -65,10 +65,10 @@ test(async function two_signals(t) {
   event_bus.second.count.one((n_sigs) => n_counted_signals = n_sigs);
   event_bus.second.immediate.sub(() => n_immediate_signals += 1);
 
-  event_bus.second.signal(); // immediate triggered here
+  event_bus.second.send(); // immediate triggered here
   t.is(n_immediate_signals, 1)
 
-  event_bus.second.signal(); // and here
+  event_bus.second.send(); // and here
   t.is(n_immediate_signals, 2)
 
   t.is(n_counted_signals, 0);
@@ -84,7 +84,7 @@ test(async function lazy(t) {
     event_name: nbus.builtin.signal(),
   };
 
-  event_bus.event_name.signal();
+  event_bus.event_name.send();
   event_bus.event_name.count.sub(() => t.fail());
   event_bus.event_name.immediate.sub(() => t.fail());
 });
@@ -96,7 +96,7 @@ test(async function flush_does_not_dispatches_without_feed(t) {
     event_name: nbus.builtin.signal(),
   };
 
-  event_bus.event_name.signal();
+  event_bus.event_name.send();
   event_bus.event_name.count.sub(() => t.fail());
   event_bus.event_name.immediate.sub(() => t.fail());
   event_bus.event_name.flush();
@@ -110,15 +110,15 @@ test(async function clear(t) {
     num: nbus.builtin.event<number>(),
   };
 
-  event_bus.sig.signal();
+  event_bus.sig.send();
   event_bus.sig.count.sub(() => t.fail());
-  event_bus.sig.neko.clear();
+  event_bus.sig._meta.clear();
   event_bus.sig.flush();
 
-  event_bus.num.dispatch(23333);
+  event_bus.num.send(23333);
   event_bus.num.list.sub(() => t.fail());
   event_bus.num.last.sub(() => t.fail());
-  event_bus.num.neko.clear();
+  event_bus.num._meta.clear();
   event_bus.num.flush();
 });
 
@@ -132,9 +132,9 @@ test(async function simple_event(t) {
   event_bus.cool_numbers.immediate.one((ev:number) => t.is(ev, 5));
   event_bus.cool_numbers.last.sub((ev:number) => t.is(ev, 10));
   event_bus.cool_numbers.list.sub((ev:number[]) => t.deepEqual(ev, [5, 10]));
-  event_bus.cool_numbers.dispatch(5);
+  event_bus.cool_numbers.send(5);
 
   event_bus.cool_numbers.immediate.one((ev:number) => t.is(ev, 10));
-  event_bus.cool_numbers.dispatch(10);
+  event_bus.cool_numbers.send(10);
   event_bus.cool_numbers.flush();
 });

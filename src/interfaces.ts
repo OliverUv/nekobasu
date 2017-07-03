@@ -24,7 +24,7 @@ export enum ShouldAbort {
 // N = list of names (of a Neko or EventBuffer in a dict)
 
 export interface EventBus<N> {
-  neko:{
+  _meta:{
     flush() : void;
     clear() : void;
   };
@@ -52,7 +52,7 @@ export interface NekoDict {
 
 export interface BaseNeko<E, N> {
   flush() : void;
-  neko:{
+  _meta:{
     clear() : void;
     get_current_used_buffer() : N | undefined;
     use_all_buffers() : void;
@@ -61,10 +61,10 @@ export interface BaseNeko<E, N> {
 }
 
 export interface Neko<E, N> extends BaseNeko<E, N> {
-  dispatch(event:E) : void;
+  send(event:E) : void;
 }
 
 export interface SignalNeko<N> extends BaseNeko<undefined, N> {
-  signal() : void;
+  send() : void;
 }
 

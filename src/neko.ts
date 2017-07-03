@@ -3,10 +3,9 @@ import * as _ from 'lodash';
 import * as N from './interfaces';
 
 const RESERVED_NAMES = [
-  'signal',
-  'dispatch',
+  'send',
   'flush',
-  'neko',
+  '_meta',
 ];
 
 export function create_neko<E, EBD extends N.EventBufferDict<E>>(buffers:EBD) : EBD & N.Neko<E, keyof EBD> {
@@ -19,7 +18,7 @@ export function create_neko<E, EBD extends N.EventBufferDict<E>>(buffers:EBD) : 
     }
   })
 
-  function dispatch(event:E) : void {
+  function send(event:E) : void {
     if (current_buffer != undefined) {
       buffers[current_buffer].feed(event);
       return;
@@ -45,9 +44,9 @@ export function create_neko<E, EBD extends N.EventBufferDict<E>>(buffers:EBD) : 
   }
 
   let neko:N.Neko<E, keyof EBD> = {
-    dispatch,
+    send,
     flush,
-    neko: {
+    _meta: {
       clear,
       get_current_used_buffer,
       use_all_buffers,
@@ -79,7 +78,7 @@ export function create_signal_neko<EBD extends N.EventBufferDict<undefined>>(buf
   function flush() {
     _.forEach(buffer_names, (buf_name) => buffers[buf_name].flush());
   }
-  function signal() : void {
+  function send() : void {
     if (current_buffer != undefined) {
       buffers[current_buffer].feed(undefined);
       return;
@@ -100,8 +99,8 @@ export function create_signal_neko<EBD extends N.EventBufferDict<undefined>>(buf
 
   let neko:N.SignalNeko<keyof EBD> = {
     flush,
-    signal,
-    neko: {
+    send,
+    _meta: {
       clear,
       get_current_used_buffer,
       use_all_buffers,
