@@ -110,14 +110,14 @@ test(async function clear(t) {
     num: nbus.builtin.event<number>(),
   };
 
-  event_bus.sig.send();
   event_bus.sig.count.sub(() => t.fail());
+  event_bus.sig.send();
   event_bus.sig._meta.clear();
   event_bus.sig.flush();
 
-  event_bus.num.send(23333);
   event_bus.num.list.sub(() => t.fail());
   event_bus.num.last.sub(() => t.fail());
+  event_bus.num.send(23333);
   event_bus.num._meta.clear();
   event_bus.num.flush();
 });
