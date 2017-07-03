@@ -19,42 +19,6 @@ import {
 
 import * as N from './interfaces';
 
-// export interface BufSubs<E, R=E> {
-//   set_mode(mode:BufMode) : void;
-//   get_mode() : BufMode;
-
-//   // Dispatches any sent event immediately
-//   immediate() : ISimpleEvent<E>;
-
-//   // Dispatches the latest event on flush, if mode
-//   // is latest_buffered
-//   latest_buffered() : ISimpleEvent<LatestBuffered<E>>;
-
-//   // Dispatches a list of all events on flush, if
-//   // mode is list_buffered
-//   list_buffered() : ISimpleEvent<ListBuffered<E>>;
-
-//   // On flush: Dispatches a custom value generated from a start value, a
-//   // reducer and all events since previous flush mode is
-//   // custom_reducer_buffered
-//   custom_reducer_buffered() : ISimpleEvent<
-//       CustomReducerBuffered<E, R>>;
-// }
-
-// export interface BufDisp<E> {
-//   flush() : void;
-//   dispatch(arg:E) : void;
-//   // If we wanted to match API of strongly-typed-events,
-//   // we'd implement this but I think we don't:
-//   // dispatchAsync(arg:E) : void;
-// }
-
-// Will return only the latest, most recent, event dispatched during the buffering period
-// export interface LatestBuffered<E> {
-//   last_event:E;
-//   n_events:number;
-// }
-
 /**
  * For reducing a stream of events to a single value to be
  * emitted on flush. `start_value` must be `_.cloneDeep`able.
