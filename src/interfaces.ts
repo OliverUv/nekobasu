@@ -23,6 +23,13 @@ export enum ShouldAbort {
 // S = reduction start value type
 // N = list of names (of a Neko or EventBuffer in a dict)
 
+export interface EventBus<N> {
+  neko:{
+    flush() : void;
+    clear() : void;
+  };
+}
+
 export interface EventBufferSpec<E, R=E, S=R> {
   reducer:Reducer<E, R, S>;
   start_value:S;
@@ -38,6 +45,9 @@ export interface EventBuffer<E, R=E> extends ISimpleEvent<R> {
 
 export interface EventBufferDict<E> {
   [buffer_name:string]:EventBuffer<E, any>;
+}
+export interface NekoDict {
+  [buffer_name:string]:Neko<any, any>|SignalNeko<any>;
 }
 
 export interface BaseNeko<E, N> {

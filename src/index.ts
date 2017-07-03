@@ -16,6 +16,7 @@
 import * as builtin from './builtin';
 
 export * from './event_buffer';
+export * from './event_bus';
 export * from './interfaces';
 export * from './neko';
 export { builtin }
