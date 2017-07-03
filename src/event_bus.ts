@@ -31,7 +31,7 @@ export function create<ND extends N.NekoDict>(nekos:ND) : ND & N.EventBus<keyof 
   };
 
   return {
-    event_bus,
+    ...event_bus,
     ...(<any>nekos),
   };
 }
