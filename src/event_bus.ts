@@ -35,3 +35,33 @@ export function create<ND extends N.NekoDict>(nekos:ND) : ND & N.EventBus<keyof 
     ...(<any>nekos),
   };
 }
+
+export function categorized_buses<EBD extends N.EventBusDict>(ebs:EBD) : EBD & N.EventCategories<keyof EBD> {
+  let eb_names:Array<keyof EBD> = Object.keys(ebs);
+
+  _.forEach(eb_names, (name) => {
+    if (_.includes(RESERVED_NAMES, name)) {
+      throw new Error(`Must not use the reserved name "${name}" as an EventBus category name.`);
+    }
+  })
+
+  function clear() {
+    _.forEach(eb_names, (n) => { ebs[n]._meta.clear(); });
+  }
+                                 
+  function flush() {
+    _.forEach(eb_names, (n) => { ebs[n]._meta.flush(); });
+  }
+
+  let event_bus:N.EventCategories<keyof EBD> = {
+    _meta:{
+      clear,
+      flush,
+    }
+  };
+
+  return {
+    ...event_bus,
+    ...(<any>ebs),
+  };
+}

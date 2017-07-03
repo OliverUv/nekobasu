@@ -28,20 +28,22 @@ test(async function one_signal(t) {
 });
 
 test(async function two_categories(t) {
-  t.plan(1);
+  t.plan(2);
 
-  let event_bus = {
-    cat_one: {
-      event_name: nbus.builtin.signal(),
-    },
-    cat_two: {
-      event_name: nbus.builtin.signal(),
-    }
-  };
+  let event_bus = nbus.categorized_buses({
+    cat_one: nbus.create({
+      e_one: nbus.builtin.signal(),
+    }),
+    cat_two: nbus.create({
+      e_two: nbus.builtin.signal(),
+    }),
+  });
 
-  event_bus.cat_one.event_name.immediate.one(() => t.pass());
-  event_bus.cat_two.event_name.immediate.one(() => t.fail());
-  event_bus.cat_one.event_name.send();
+  event_bus.cat_one.e_one.immediate.sub(() => t.pass());
+  event_bus.cat_one.e_one.count.sub(() => t.pass());
+  event_bus.cat_two.e_two.immediate.sub(() => t.fail());
+  event_bus.cat_one.e_one.send();
+  event_bus._meta.flush();
 });
 
 test(async function two_signals(t) {
