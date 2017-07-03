@@ -21,6 +21,7 @@ export enum ShouldAbort {
 // E = event type
 // R = reduction result type
 // S = reduction start value type
+// N = list of names (of a Neko or EventBuffer in a dict)
 
 export interface EventBufferSpec<E, R=E, S=R> {
   reducer:Reducer<E, R, S>;
@@ -39,23 +40,21 @@ export interface EventBufferDict<E> {
   [buffer_name:string]:EventBuffer<E, any>;
 }
 
-export interface Neko<E, B> {
-  dispatch(event:E) : void;
+export interface BaseNeko<E, N> {
   flush() : void;
   neko:{
-    use_single_buffer(buffer_name:B) : void;
+    clear() : void;
+    get_current_used_buffer() : N | undefined;
     use_all_buffers() : void;
-    get_current_used_buffer() : B | undefined;
+    use_single_buffer(buffer_name:N) : void;
   };
 }
 
-export interface SignalNeko<B> {
-  flush() : void;
+export interface Neko<E, N> extends BaseNeko<E, N> {
+  dispatch(event:E) : void;
+}
+
+export interface SignalNeko<N> extends BaseNeko<undefined, N> {
   signal() : void;
-  neko:{
-    use_single_buffer(buffer_name:B) : void;
-    use_all_buffers() : void;
-    get_current_used_buffer() : B | undefined;
-  };
 }
 

@@ -26,13 +26,18 @@ export function create_neko<E, EBD extends N.EventBufferDict<E>>(buffers:EBD) : 
     }
     _.forEach(buffer_names, (buf_name) => buffers[buf_name].feed(event));
   }
+  function clear() {
+    _.forEach(buffer_names, (buf_name) => buffers[buf_name].clear());
+  }
   function flush() {
     _.forEach(buffer_names, (buf_name) => buffers[buf_name].flush());
   }
   function use_single_buffer(buffer_name:keyof EBD) : void {
+    clear();
     current_buffer = buffer_name;
   }
   function use_all_buffers() {
+    clear();
     current_buffer = undefined;
   }
   function get_current_used_buffer() {
@@ -43,6 +48,7 @@ export function create_neko<E, EBD extends N.EventBufferDict<E>>(buffers:EBD) : 
     dispatch,
     flush,
     neko: {
+      clear,
       get_current_used_buffer,
       use_all_buffers,
       use_single_buffer,
@@ -67,6 +73,9 @@ export function create_signal_neko<EBD extends N.EventBufferDict<undefined>>(buf
     }
   })
 
+  function clear() {
+    _.forEach(buffer_names, (buf_name) => buffers[buf_name].clear());
+  }
   function flush() {
     _.forEach(buffer_names, (buf_name) => buffers[buf_name].flush());
   }
@@ -78,11 +87,11 @@ export function create_signal_neko<EBD extends N.EventBufferDict<undefined>>(buf
     _.forEach(buffer_names, (buf_name) => buffers[buf_name].feed(undefined));
   }
   function use_single_buffer(buffer_name:keyof EBD) : void {
-    _.forEach(buffer_names, (buf_name) => buffers[buf_name].clear());
+    clear();
     current_buffer = buffer_name;
   }
   function use_all_buffers() {
-    _.forEach(buffer_names, (buf_name) => buffers[buf_name].clear());
+    clear();
     current_buffer = undefined;
   }
   function get_current_used_buffer() {
@@ -93,6 +102,7 @@ export function create_signal_neko<EBD extends N.EventBufferDict<undefined>>(buf
     flush,
     signal,
     neko: {
+      clear,
       get_current_used_buffer,
       use_all_buffers,
       use_single_buffer,

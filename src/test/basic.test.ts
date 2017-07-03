@@ -102,6 +102,26 @@ test(async function flush_does_not_dispatches_without_feed(t) {
   event_bus.event_name.flush();
 });
 
+test(async function clear(t) {
+  t.plan(0);
+
+  let event_bus = {
+    sig: nbus.builtin.signal(),
+    num: nbus.builtin.event<number>(),
+  };
+
+  event_bus.sig.signal();
+  event_bus.sig.count.sub(() => t.fail());
+  event_bus.sig.neko.clear();
+  event_bus.sig.flush();
+
+  event_bus.num.dispatch(23333);
+  event_bus.num.list.sub(() => t.fail());
+  event_bus.num.last.sub(() => t.fail());
+  event_bus.num.neko.clear();
+  event_bus.num.flush();
+});
+
 test(async function simple_event(t) {
   t.plan(4);
 
