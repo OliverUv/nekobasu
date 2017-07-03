@@ -20,8 +20,8 @@ tslint.json
 *.log
 .idea/
 
-# don't ignore all build artifacts !!
-# build/
+# Ignore test source and artifacts
+src/test/
 build/test/
 
 
