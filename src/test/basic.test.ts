@@ -19,9 +19,9 @@ import * as nbus from '../';
 test(async function one_signal(t) {
   t.plan(1);
 
-  let event_bus = {
+  let event_bus = nbus.create({
     event_name: nbus.builtin.signal(),
-  };
+  });
 
   event_bus.event_name.immediate.one(() => t.pass());
   event_bus.event_name.send();
@@ -47,10 +47,10 @@ test(async function two_categories(t) {
 test(async function two_signals(t) {
   t.plan(5);
 
-  let event_bus = {
+  let event_bus = nbus.create({
     first: nbus.builtin.signal(),
     second: nbus.builtin.signal(),
-  };
+  });
   event_bus.first._meta.use_single_buffer('immediate');
   event_bus.second._meta.use_all_buffers(); // all modes enabled at the same time, default
 
@@ -80,9 +80,9 @@ test(async function two_signals(t) {
 test(async function lazy(t) {
   t.plan(0);
 
-  let event_bus = {
+  let event_bus = nbus.create({
     event_name: nbus.builtin.signal(),
-  };
+  });
 
   event_bus.event_name.send();
   event_bus.event_name.count.sub(() => t.fail());
@@ -92,9 +92,9 @@ test(async function lazy(t) {
 test(async function flush_does_not_dispatches_without_feed(t) {
   t.plan(0);
 
-  let event_bus = {
+  let event_bus = nbus.create({
     event_name: nbus.builtin.signal(),
-  };
+  });
 
   event_bus.event_name.send();
   event_bus.event_name.count.sub(() => t.fail());
@@ -105,10 +105,10 @@ test(async function flush_does_not_dispatches_without_feed(t) {
 test(async function clear(t) {
   t.plan(0);
 
-  let event_bus = {
+  let event_bus = nbus.create({
     sig: nbus.builtin.signal(),
     num: nbus.builtin.event<number>(),
-  };
+  });
 
   event_bus.sig.count.sub(() => t.fail());
   event_bus.sig.send();
@@ -122,12 +122,37 @@ test(async function clear(t) {
   event_bus.num.flush();
 });
 
+test(async function event_bus_clear_and_flush(t) {
+  t.plan(1);
+
+  let event_bus = nbus.create({
+    sig: nbus.builtin.signal(),
+    num: nbus.builtin.event<number>(),
+    num_two: nbus.builtin.event<number>(),
+  });
+
+  event_bus.sig.count.sub(() => t.fail());
+  event_bus.sig.send();
+  event_bus._meta.clear();
+  event_bus.sig.flush();
+
+  event_bus.num.list.sub(() => t.fail());
+  event_bus.num.last.sub(() => t.fail());
+  event_bus.num.send(23333);
+  event_bus._meta.clear();
+  event_bus.num.flush();
+
+  event_bus.num_two.last.sub((n) => t.is(n, 23333));
+  event_bus.num_two.send(23333);
+  event_bus._meta.flush();
+});
+
 test(async function simple_event(t) {
   t.plan(4);
 
-  let event_bus = {
+  let event_bus = nbus.create({
     cool_numbers: nbus.builtin.event<number>(),
-  };
+  });
 
   event_bus.cool_numbers.immediate.one((ev:number) => t.is(ev, 5));
   event_bus.cool_numbers.last.sub((ev:number) => t.is(ev, 10));
