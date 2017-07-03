@@ -1,10 +1,5 @@
 import {
-  ISignal,
-  ISignalHandler,
   ISimpleEvent,
-  ISimpleEventHandler,
-  ISubscribable,
-  SimpleEventDispatcher,
 } from 'strongly-typed-events';
 
 import { EventBufferImpl } from './event_buffer'; // use type only

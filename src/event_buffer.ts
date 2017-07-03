@@ -1,10 +1,5 @@
 import * as _ from 'lodash';
 import {
-  ISignal,
-  ISignalHandler,
-  ISimpleEvent,
-  ISimpleEventHandler,
-  ISubscribable,
   SimpleEventDispatcher,
 } from 'strongly-typed-events';
 
@@ -96,7 +91,7 @@ export class EventBufferImpl<E, R=E, S=R> extends SimpleEventDispatcher<R> imple
 
   public clear() : void {
     // Though we know the reduced_value parameter
-    // won't be used before it's overwritten by a 
+    // won't be used before it's overwritten by a
     // proper value, we make sure to release our
     // reference to it in case it's a large object.
     this.reduced_value = undefined;
