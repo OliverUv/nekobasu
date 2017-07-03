@@ -165,3 +165,31 @@ test(async function simple_event(t) {
   event_bus.cool_numbers.send(10);
   event_bus.cool_numbers.flush();
 });
+
+test(async function builtin_instrumented_last(t) {
+  t.plan(2);
+
+  const event_bus = nbus.create({
+    cool_numbers: nbus.builtin.event<number>(),
+  });
+
+  // event_bus.cool_numbers.instrumented_last.one((ev) => console.log(ev));
+  event_bus.cool_numbers.instrumented_last.one((ev) => t.deepEqual(ev, {
+    last_event: 10,
+    n_events_fired: 2,
+  }));
+  event_bus.cool_numbers.send(5);
+  event_bus.cool_numbers.send(10);
+  event_bus.cool_numbers.flush();
+
+  event_bus.cool_numbers.instrumented_last.one((ev) => t.deepEqual(ev, {
+    last_event: 233,
+    n_events_fired: 5,
+  }));
+  event_bus.cool_numbers.send(200);
+  event_bus.cool_numbers.send(200);
+  event_bus.cool_numbers.send(200);
+  event_bus.cool_numbers.send(200);
+  event_bus.cool_numbers.send(233);
+  event_bus.cool_numbers.flush();
+});

@@ -20,6 +20,7 @@ export { event_buffer }
 export function event<E>() {
   const spec = {
     immediate: event_buffer.immediate<E>(),
+    instrumented_last: event_buffer.instrumented_last<E>(),
     last: event_buffer.last<E>(),
     list: event_buffer.list<E>(),
   };

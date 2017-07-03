@@ -25,18 +25,28 @@ export function list<E>() {
   });
 }
 
-// export interface LastInstrumentedBuffer<E> {
-//   last_event:E;
-// }
+export interface InstrumentedLast<E> {
+  last_event:E;
+  n_events_fired:number;
+}
 
-// export function last_instrumented<E>() {
-//   return EB.create_event_buffer<E, LastInstrumentedBuffer<E>, undefined>({
-//     reducer: (acc, next) => {
-//       return {last_event: next};
-//     },
-//     start_value: undefined,
-//   });
-// }
+export function instrumented_last<E>() {
+  return EB.create_event_buffer<E, InstrumentedLast<E>, undefined>({
+    reducer: (acc, next) => {
+      if (acc == undefined) {
+        return {
+          last_event: next,
+          n_events_fired: 1,
+        };
+      }
+      return {
+        last_event: next,
+        n_events_fired: 1 + acc.n_events_fired,
+      };
+    },
+    start_value: undefined,
+  });
+}
 
 export function last<E>() {
   return EB.create_event_buffer<E, E, undefined>({
