@@ -4,9 +4,10 @@ catastrophic library), you grant Oliver Uvman the right to distribute
 your contribution under the Apache 2.0 license or any GPLv2 compatible
 license as recognized by the Free Software Foundation.
 
-I try to keep the API to this library minimal, so please ask before you
-start coding on any contributions. There's a large risk that I might
-want to give you some feedback on the API design.
+I try to optimize the API to this library for clients' convenience,
+so please ask before you start coding on any contributions. There's
+a large risk that I might want to give you some feedback on the API
+design.
 
 Please also include tests for any contribution you make, see the tests
 directory.
