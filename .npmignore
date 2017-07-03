@@ -13,6 +13,8 @@ tags
 
 # build tools
 node_modules/
+yarn.lock
+tslint.json
 
 # logfiles
 *.log
@@ -22,5 +24,6 @@ node_modules/
 # build/
 build/test/
 
-# but do ignore
-yarn.lock
+
+# ignore instructional files
+example/
