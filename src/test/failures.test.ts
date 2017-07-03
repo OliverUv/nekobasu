@@ -14,4 +14,32 @@
 
 import { test } from 'ava';
 
-test.todo('Ensure can not use RESERVED_NAMES');
+import * as nbus from '../';
+
+
+test.todo('Ensure can not use EventBus RESERVED_NAMES');
+
+test(async function throws_on_reserved_name_use_neko(t) {
+  let event_buffer = nbus.builtin.event_buffer;
+  let create_signal_neko = nbus.create_signal_neko;
+  let create_event_neko = nbus.create_neko;
+
+  t.plan(6);
+
+  let signal_a = { send: event_buffer.immediate<undefined>() };
+  let signal_b = { flush: event_buffer.immediate<undefined>() };
+  let signal_c = { _meta: event_buffer.immediate<undefined>() };
+
+  t.throws(() => create_signal_neko<typeof signal_a>(signal_a));
+  t.throws(() => create_signal_neko<typeof signal_b>(signal_b));
+  t.throws(() => create_signal_neko<typeof signal_c>(signal_c));
+
+  let event_a = { send: event_buffer.immediate<number>() };
+  let event_b = { flush: event_buffer.immediate<number>() };
+  let event_c = { _meta: event_buffer.immediate<number>() };
+
+  t.throws(() => create_event_neko<number, typeof event_a>(event_a));
+  t.throws(() => create_event_neko<number, typeof event_b>(event_b));
+  t.throws(() => create_event_neko<number, typeof event_c>(event_c));
+});
+
