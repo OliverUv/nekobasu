@@ -12,11 +12,10 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
-
 import * as builtin from './builtin';
 
 export * from './event_buffer';
 export * from './event_bus';
 export * from './interfaces';
 export * from './neko';
-export { builtin }
+export { builtin };

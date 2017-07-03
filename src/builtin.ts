@@ -4,7 +4,7 @@ import * as event_buffer from './builtin_event_buffers';
 export { event_buffer }
 
 export function event<E>() {
-  let spec = {
+  const spec = {
     immediate: event_buffer.immediate<E>(),
     last: event_buffer.last<E>(),
     list: event_buffer.list<E>(),
@@ -14,7 +14,7 @@ export function event<E>() {
 }
 
 export function signal() {
-  let spec = {
+  const spec = {
     count: event_buffer.count(),
     immediate: event_buffer.immediate<undefined>(),
   };

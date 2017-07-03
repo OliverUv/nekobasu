@@ -17,23 +17,23 @@ import { test } from 'ava';
 import * as nbus from '../';
 
 test(async function throws_on_reserved_name_use_neko(t) {
-  let event_buffer = nbus.builtin.event_buffer;
-  let create_signal_neko = nbus.create_signal_neko;
-  let create_event_neko = nbus.create_neko;
+  const event_buffer = nbus.builtin.event_buffer;
+  const create_signal_neko = nbus.create_signal_neko;
+  const create_event_neko = nbus.create_neko;
 
   t.plan(6);
 
-  let signal_a = { send: event_buffer.immediate<undefined>() };
-  let signal_b = { flush: event_buffer.immediate<undefined>() };
-  let signal_c = { _meta: event_buffer.immediate<undefined>() };
+  const signal_a = { send: event_buffer.immediate<undefined>() };
+  const signal_b = { flush: event_buffer.immediate<undefined>() };
+  const signal_c = { _meta: event_buffer.immediate<undefined>() };
 
   t.throws(() => create_signal_neko<typeof signal_a>(signal_a));
   t.throws(() => create_signal_neko<typeof signal_b>(signal_b));
   t.throws(() => create_signal_neko<typeof signal_c>(signal_c));
 
-  let event_a = { send: event_buffer.immediate<number>() };
-  let event_b = { flush: event_buffer.immediate<number>() };
-  let event_c = { _meta: event_buffer.immediate<number>() };
+  const event_a = { send: event_buffer.immediate<number>() };
+  const event_b = { flush: event_buffer.immediate<number>() };
+  const event_c = { _meta: event_buffer.immediate<number>() };
 
   t.throws(() => create_event_neko<number, typeof event_a>(event_a));
   t.throws(() => create_event_neko<number, typeof event_b>(event_b));
@@ -41,15 +41,15 @@ test(async function throws_on_reserved_name_use_neko(t) {
 });
 
 test(async function throws_on_reserved_name_use_event_bus(t) {
-  let event_buffer = nbus.builtin.event_buffer;
-  let create_signal_neko = nbus.create_signal_neko;
-  let create_event_neko = nbus.create_neko;
+  const event_buffer = nbus.builtin.event_buffer;
+  const create_signal_neko = nbus.create_signal_neko;
+  const create_event_neko = nbus.create_neko;
 
   t.plan(1);
 
-  let signal_a = { whatever: event_buffer.immediate<undefined>() };
-  let neko = create_signal_neko<typeof signal_a>(signal_a);
-  let nekos = {
+  const signal_a = { whatever: event_buffer.immediate<undefined>() };
+  const neko = create_signal_neko<typeof signal_a>(signal_a);
+  const nekos = {
     _meta: neko,
   };
 

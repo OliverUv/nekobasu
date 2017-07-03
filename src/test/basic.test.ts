@@ -19,7 +19,7 @@ import * as nbus from '../';
 test(async function one_signal(t) {
   t.plan(1);
 
-  let event_bus = nbus.create({
+  const event_bus = nbus.create({
     event_name: nbus.builtin.signal(),
   });
 
@@ -30,7 +30,7 @@ test(async function one_signal(t) {
 test(async function two_categories(t) {
   t.plan(2);
 
-  let event_bus = nbus.categorized_buses({
+  const event_bus = nbus.categorized_buses({
     cat_one: nbus.create({
       e_one: nbus.builtin.signal(),
     }),
@@ -49,7 +49,7 @@ test(async function two_categories(t) {
 test(async function two_signals(t) {
   t.plan(5);
 
-  let event_bus = nbus.create({
+  const event_bus = nbus.create({
     first: nbus.builtin.signal(),
     second: nbus.builtin.signal(),
   });
@@ -68,10 +68,10 @@ test(async function two_signals(t) {
   event_bus.second.immediate.sub(() => n_immediate_signals += 1);
 
   event_bus.second.send(); // immediate triggered here
-  t.is(n_immediate_signals, 1)
+  t.is(n_immediate_signals, 1);
 
   event_bus.second.send(); // and here
-  t.is(n_immediate_signals, 2)
+  t.is(n_immediate_signals, 2);
 
   t.is(n_counted_signals, 0);
 
@@ -82,7 +82,7 @@ test(async function two_signals(t) {
 test(async function lazy(t) {
   t.plan(0);
 
-  let event_bus = nbus.create({
+  const event_bus = nbus.create({
     event_name: nbus.builtin.signal(),
   });
 
@@ -94,7 +94,7 @@ test(async function lazy(t) {
 test(async function flush_does_not_dispatches_without_feed(t) {
   t.plan(0);
 
-  let event_bus = nbus.create({
+  const event_bus = nbus.create({
     event_name: nbus.builtin.signal(),
   });
 
@@ -107,7 +107,7 @@ test(async function flush_does_not_dispatches_without_feed(t) {
 test(async function clear(t) {
   t.plan(0);
 
-  let event_bus = nbus.create({
+  const event_bus = nbus.create({
     sig: nbus.builtin.signal(),
     num: nbus.builtin.event<number>(),
   });
@@ -127,7 +127,7 @@ test(async function clear(t) {
 test(async function event_bus_clear_and_flush(t) {
   t.plan(1);
 
-  let event_bus = nbus.create({
+  const event_bus = nbus.create({
     sig: nbus.builtin.signal(),
     num: nbus.builtin.event<number>(),
     num_two: nbus.builtin.event<number>(),
@@ -152,7 +152,7 @@ test(async function event_bus_clear_and_flush(t) {
 test(async function simple_event(t) {
   t.plan(4);
 
-  let event_bus = nbus.create({
+  const event_bus = nbus.create({
     cool_numbers: nbus.builtin.event<number>(),
   });
 

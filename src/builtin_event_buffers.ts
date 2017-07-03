@@ -49,7 +49,7 @@ export function immediate<E>() {
     before_flush: () => {
       return N.ShouldAbort.yes;
     },
-    before_feed: (event:E, self:EB.EventBufferImpl<E,E>) => {
+    before_feed: (event:E, self:EB.EventBufferImpl<E, E>) => {
       self.dispatch(event);
       return N.ShouldAbort.yes;
     },

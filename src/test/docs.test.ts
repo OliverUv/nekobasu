@@ -37,10 +37,10 @@ test(async function multiple_buses_with_types_infered_from_factory_function(t) {
     });
   }
 
-  let one = create_bus();
+  const one = create_bus();
 
-  let two = create_bus();
-  let three = create_bus();
+  const two = create_bus();
+  const three = create_bus();
 
   one.big_cat_events.purr.immediate.one(() => t.pass());
   two.big_cat_events.purr.immediate.sub(() => t.fail());
@@ -56,14 +56,14 @@ test(async function multiple_buses_with_types_infered_from_factory_function(t) {
 test.failing(async function this_lib_is_not_clone_safe(t) {
   t.plan(2);
 
-  let one = nbus.categorized_buses({
+  const one = nbus.categorized_buses({
     big_cat_events: nbus.create({
       purr: nbus.builtin.signal(),
     }),
   });
 
-  let two = _.cloneDeep(one);
-  let three = _.cloneDeep(one);
+  const two = _.cloneDeep(one);
+  const three = _.cloneDeep(one);
 
   one.big_cat_events.purr.immediate.one(() => t.pass());
   two.big_cat_events.purr.immediate.sub(() => t.fail());
