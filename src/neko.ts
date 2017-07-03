@@ -13,9 +13,9 @@ export function create_neko<E, EBD extends N.EventBufferDict<E>>(buffers:EBD) : 
   let buffer_names:Array<keyof EBD> = Object.keys(buffers);
   let current_buffer:keyof EBD | undefined;
 
-  _.forEach(buffer_names, (b_name) => {
-    if (_.includes(RESERVED_NAMES, b_name)) {
-      throw new Error(`Must not use the reserved name "${b_name}" as a buffer name.`);
+  _.forEach(buffer_names, (eb_name) => {
+    if (_.includes(RESERVED_NAMES, eb_name)) {
+      throw new Error(`Must not use the reserved name "${eb_name}" as a buffer name.`);
     }
   })
 
