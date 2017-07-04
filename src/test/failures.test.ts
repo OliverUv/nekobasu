@@ -104,3 +104,22 @@ test(async function bad_custom_buffer(t) {
 
   event_bus.my_numbers.send(1);
 });
+
+test(async function duplicate_event_buffer_names_during_merge(t) {
+  const dumb_buffers = {
+    immediate: <any>null, // will collide
+    no_problem: <any>null,
+    completely_fine: <any>null,
+  };
+
+  t.plan(1);
+
+  try {
+    const buf_dict = nbus.builtin.modify.merge_ebs(
+      dumb_buffers,
+      nbus.builtin.event_ebs<number>(),
+    );
+  } catch (e) {
+    t.regex(e.message, /immediate/);
+  }
+});
