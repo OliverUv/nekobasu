@@ -14,20 +14,28 @@
 
 import * as nbus from './';
 
+// To export your Event Bus' type, you have to import and export many (all?)
+// of the nekobasu types that make it up. TypeScript requires this for some
+// reason.
+
 import {
-  EventBus,
-  EventBuffer,
-  EventCategories,
-  SignalNeko,
   BaseNeko,
-} from './';
+  EventBuffer,
+  EventBus,
+  EventCategories,
+  Neko,
+  SignalNeko,
+} from 'nekobasu';
+import { InstrumentedLast } from 'nekobasu/build/builtin_event_buffers';
 
 export {
-  EventBus,
-  EventBuffer,
-  EventCategories,
-  SignalNeko,
   BaseNeko,
+  EventBuffer,
+  EventBus,
+  EventCategories,
+  InstrumentedLast,
+  Neko,
+  SignalNeko,
 };
 
 export function get_bus() {
@@ -42,5 +50,6 @@ export function get_bus() {
 // We want the creation of the real/used event bus
 // to be contained within the function, so that we
 // can create multiple event buses if needed.
-export let INVALID_DO_NOT_IMPORT = get_bus();
-export type BusType = typeof INVALID_DO_NOT_IMPORT;
+
+export let INVALID__DO_NOT_IMPORT = get_bus();
+export type BusType = typeof INVALID__DO_NOT_IMPORT;
