@@ -23,21 +23,29 @@ test(async function throws_on_reserved_name_use_neko(t) {
 
   t.plan(6);
 
+  function ensure_throws(str_in_msg:string, fn:Function) {
+    try {
+      fn();
+    } catch (e) {
+      t.true(e.message.includes(str_in_msg));
+    }
+  }
+
   const signal_a = { send: event_buffer.immediate<undefined>() };
   const signal_b = { flush: event_buffer.immediate<undefined>() };
   const signal_c = { _meta: event_buffer.immediate<undefined>() };
 
-  t.throws(() => create_signal_neko<typeof signal_a>(signal_a));
-  t.throws(() => create_signal_neko<typeof signal_b>(signal_b));
-  t.throws(() => create_signal_neko<typeof signal_c>(signal_c));
+  ensure_throws('send', () => create_signal_neko<typeof signal_a>(signal_a))
+  ensure_throws('flush', () => create_signal_neko<typeof signal_b>(signal_b))
+  ensure_throws('_meta', () => create_signal_neko<typeof signal_c>(signal_c))
 
   const event_a = { send: event_buffer.immediate<number>() };
   const event_b = { flush: event_buffer.immediate<number>() };
   const event_c = { _meta: event_buffer.immediate<number>() };
 
-  t.throws(() => create_event_neko<number, typeof event_a>(event_a));
-  t.throws(() => create_event_neko<number, typeof event_b>(event_b));
-  t.throws(() => create_event_neko<number, typeof event_c>(event_c));
+  ensure_throws('send', () => create_event_neko<number, typeof event_a>(event_a))
+  ensure_throws('flush', () => create_event_neko<number, typeof event_b>(event_b))
+  ensure_throws('_meta', () => create_event_neko<number, typeof event_c>(event_c))
 });
 
 test(async function throws_on_reserved_name_use_event_bus(t) {
@@ -48,11 +56,14 @@ test(async function throws_on_reserved_name_use_event_bus(t) {
 
   const signal_a = { whatever: event_buffer.immediate<undefined>() };
   const neko = create_signal_neko<typeof signal_a>(signal_a);
-  const nekos = {
-    _meta: neko,
-  };
+  const nekos = { _meta: neko };
 
-  t.throws(() => nbus.create<typeof nekos>(nekos));
+  t.plan(1);
+  try {
+    nbus.create<typeof nekos>(nekos);
+  } catch (e) {
+    t.regex(e.message, /_meta/);
+  }
 });
 
 test(async function bad_custom_buffer(t) {
