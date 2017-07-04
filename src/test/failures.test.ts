@@ -17,7 +17,7 @@ import { test } from 'ava';
 import * as nbus from '../';
 
 test(async function throws_on_reserved_name_use_neko(t) {
-  const event_buffer = nbus.builtin.event_buffer;
+  const event_buffer = nbus.builtin.event_buffers;
   const create_signal_neko = nbus.create_signal_neko;
   const create_event_neko = nbus.create_neko;
 
@@ -41,7 +41,7 @@ test(async function throws_on_reserved_name_use_neko(t) {
 });
 
 test(async function throws_on_reserved_name_use_event_bus(t) {
-  const event_buffer = nbus.builtin.event_buffer;
+  const event_buffer = nbus.builtin.event_buffers;
   const create_signal_neko = nbus.create_signal_neko;
   const create_event_neko = nbus.create_neko;
 
@@ -56,3 +56,51 @@ test(async function throws_on_reserved_name_use_event_bus(t) {
   t.throws(() => nbus.create<typeof nekos>(nekos));
 });
 
+test(async function bad_custom_buffer(t) {
+  const doubler_buffer = nbus.create_event_buffer<number>({
+    reducer: (acc, next) => acc + 2 * next,
+      start_value: 0,
+  });
+
+  const csv_buffer = nbus.create_event_buffer<number, string, undefined>({
+    reducer: (acc, next) => {
+      if (acc == undefined) {
+        return next.toString();
+      }
+      return `${acc},${next}`;
+    },
+    start_value: undefined,
+  });
+
+  const dumb_buffers = {
+    doubler: doubler_buffer,
+    csv: csv_buffer,
+  };
+
+  const buf_dict = nbus.builtin.modify.merge_ebs(
+    dumb_buffers,
+    nbus.builtin.event_ebs<number>(),
+  );
+
+  function neko_creator() {
+    return nbus.create_neko<number, typeof buf_dict>(buf_dict);
+  }
+
+  const event_bus = nbus.create({
+    my_numbers: neko_creator(),
+    your_numbers: neko_creator(),
+  });
+
+  t.plan(2);
+
+  // This one should not trigger since we only send to my_numbers,
+  // but will trigger if you haven't constructed individual buffers.
+  // See the custom_buffer test in basic.test.ts for info on how to
+  // do it properly.
+  event_bus.your_numbers.immediate.sub(() => t.pass());
+
+  // This one should trigger as expected.
+  event_bus.my_numbers.immediate.sub(() => t.pass());
+
+  event_bus.my_numbers.send(1);
+});

@@ -15,7 +15,9 @@
 import * as N from './interfaces';
 import * as EB from './event_buffer';
 
-export function list<E>() {
+export type ListBuffer<E> = N.EventBuffer<E, E[]>;
+
+export function list<E>() : ListBuffer<E> {
   return EB.create_event_buffer<E, E[]>({
     reducer: (acc, next) => {
       acc.push(next);
@@ -30,7 +32,9 @@ export interface InstrumentedLast<E> {
   n_events_fired:number;
 }
 
-export function instrumented_last<E>() {
+export type InstrumentedLastBuffer<E> = N.EventBuffer<E, InstrumentedLast<E>>;
+
+export function instrumented_last<E>() : InstrumentedLastBuffer<E> {
   return EB.create_event_buffer<E, InstrumentedLast<E>, undefined>({
     reducer: (acc, next) => {
       if (acc == undefined) {
@@ -48,7 +52,9 @@ export function instrumented_last<E>() {
   });
 }
 
-export function last<E>() {
+export type LastBuffer<E> = N.EventBuffer<E, E>;
+
+export function last<E>() : LastBuffer<E> {
   return EB.create_event_buffer<E, E, undefined>({
     reducer: (acc, next) => {
       return next;
@@ -57,14 +63,18 @@ export function last<E>() {
   });
 }
 
-export function count() {
+export type CountBuffer = N.EventBuffer<any, number>;
+
+export function count() : CountBuffer {
   return EB.create_event_buffer<any, number>({
     reducer: (acc, next) => acc + 1,
     start_value: 0,
   });
 }
 
-export function immediate<E>() {
+export type ImmediateBuffer<E> = N.EventBuffer<E, E>;
+
+export function immediate<E>() : ImmediateBuffer<E> {
   // We don't fulfill the requirement of supplying
   // reducer or start_value here, because we know
   // that the on_feed and on_flush tie-ins will let

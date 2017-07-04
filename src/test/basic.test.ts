@@ -193,3 +193,59 @@ test(async function builtin_instrumented_last(t) {
   event_bus.cool_numbers.send(233);
   event_bus.cool_numbers.flush();
 });
+
+test(async function custom_buffer(t) {
+  function doubler_buffer() {
+    return nbus.create_event_buffer<number>({
+      reducer: (acc, next) => acc + 2 * next,
+        start_value: 0,
+    });
+  }
+
+  function csv_buffer() {
+    return nbus.create_event_buffer<number, string, undefined>({
+      reducer: (acc, next) => {
+        if (acc == undefined) {
+          return next.toString();
+        }
+        return `${acc},${next}`;
+      },
+      start_value: undefined,
+    });
+  }
+
+  function neko_creator() {
+    const dumb_buffers = {
+      doubler: doubler_buffer(),
+      csv: csv_buffer(),
+    };
+
+    const buf_dict = nbus.builtin.modify.merge_ebs(
+      dumb_buffers,
+      nbus.builtin.event_ebs<number>(),
+    );
+
+    return nbus.create_neko<number, typeof buf_dict>(buf_dict);
+  }
+
+  const event_bus = nbus.create({
+    my_numbers: neko_creator(),
+    your_numbers: neko_creator(),
+  });
+
+  t.plan(5);
+
+  event_bus.my_numbers.immediate.sub(() => t.pass()); // 3
+  event_bus.my_numbers.csv.one((ev) => t.is(ev, '1,2,3')); // 1
+  event_bus.my_numbers.doubler.one((ev) => t.is(ev, 2 + 4 + 6)); // 1
+
+  event_bus.your_numbers.csv.sub(() => t.fail());
+  event_bus.your_numbers.doubler.sub(() => t.fail());
+  event_bus.your_numbers.immediate.sub(() => t.fail());
+
+  event_bus.my_numbers.send(1);
+  event_bus.my_numbers.send(2);
+  event_bus.my_numbers.send(3);
+
+  event_bus._meta.flush();
+});

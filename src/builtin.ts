@@ -14,25 +14,47 @@
 
 import { create_neko, create_signal_neko } from './neko';
 import * as N from './interfaces';
-import * as event_buffer from './builtin_event_buffers';
-export { event_buffer }
+import * as EB from './builtin_event_buffers';
 
-export function event<E>() {
-  const spec = {
-    immediate: event_buffer.immediate<E>(),
-    instrumented_last: event_buffer.instrumented_last<E>(),
-    last: event_buffer.last<E>(),
-    list: event_buffer.list<E>(),
+import * as event_buffers from './builtin_event_buffers';
+export { event_buffers }
+import * as modify from './builtin_modifiers';
+export { modify };
+
+export interface BuiltinEventEventBuffers<E> {
+  immediate: EB.ImmediateBuffer<E>;
+  instrumented_last: EB.InstrumentedLastBuffer<E>;
+  last: EB.LastBuffer<E>;
+  list: EB.ListBuffer<E>;
+}
+
+export interface BuiltinSignalEventBuffers {
+  immediate: EB.ImmediateBuffer<undefined>;
+  count: EB.CountBuffer;
+}
+
+export interface BuiltinEventNeko<E> extends BuiltinEventEventBuffers<E>, N.Neko<E, keyof BuiltinEventEventBuffers<E>> {}
+export interface BuiltinSignalNeko extends BuiltinSignalEventBuffers, N.Neko<undefined, keyof BuiltinSignalEventBuffers> {}
+
+export function event_ebs<E>() {
+  return {
+    immediate: EB.immediate<E>(),
+    instrumented_last: EB.instrumented_last<E>(),
+    last: EB.last<E>(),
+    list: EB.list<E>(),
   };
+}
 
-  return create_neko<E, typeof spec>(spec);
+export function event<E>() : BuiltinEventNeko<E> {
+  let eb_dict = event_ebs<E>();
+  return create_neko<E, typeof eb_dict>(eb_dict);
 }
 
 export function signal() {
-  const spec = {
-    count: event_buffer.count(),
-    immediate: event_buffer.immediate<undefined>(),
+  const eb_dict = {
+    count: EB.count(),
+    immediate: EB.immediate<undefined>(),
   };
 
-  return create_signal_neko<typeof spec>(spec);
+  return create_signal_neko<typeof eb_dict>(eb_dict);
 }
