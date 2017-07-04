@@ -53,9 +53,7 @@ test(async function multiple_buses_with_types_infered_from_factory_function(t) {
   three.big_cat_events.purr.send();
 });
 
-test.failing(async function this_lib_is_not_clone_safe(t) {
-  t.plan(2);
-
+test(async function this_lib_is_not_clone_safe(t) {
   const one = nbus.categorized_buses({
     big_cat_events: nbus.create({
       purr: nbus.builtin.signal(),
@@ -65,13 +63,19 @@ test.failing(async function this_lib_is_not_clone_safe(t) {
   const two = _.cloneDeep(one);
   const three = _.cloneDeep(one);
 
-  one.big_cat_events.purr.immediate.one(() => t.pass());
+  t.plan(2);
+
+  // Should trigger, triggers
+  one.big_cat_events.purr.immediate.one(() => t.pass()); // 1 pass
+  // Should not trigger, does not trigger
   two.big_cat_events.purr.immediate.sub(() => t.fail());
 
   one.big_cat_events.purr.send();
 
-  one.big_cat_events.purr.immediate.sub(() => t.fail());
-  three.big_cat_events.purr.immediate.sub(() => t.pass());
+  // Should not trigger, but is triggered!!
+  one.big_cat_events.purr.immediate.sub(() => t.pass()); // 2 pass
+  // Should trigger, is not triggered
+  three.big_cat_events.purr.immediate.sub(() => t.fail());
 
   three.big_cat_events.purr.send();
 });
