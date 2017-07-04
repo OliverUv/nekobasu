@@ -24,6 +24,5 @@ tslint.json
 src/test/
 build/test/
 
-
 # ignore instructional files
 example/
