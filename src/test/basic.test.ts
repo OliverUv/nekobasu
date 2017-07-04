@@ -46,6 +46,7 @@ test(async function two_categories(t) {
   event_bus._meta.flush();
 });
 
+// TODO divide up the two_signals test into multiple tests
 test(async function two_signals(t) {
   t.plan(5);
 
