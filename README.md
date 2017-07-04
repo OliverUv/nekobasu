@@ -1,5 +1,5 @@
 # nekobasu
 
-Configurable event bus that can buffer and reduce events!
+Configurable and type safe event bus that can buffer and reduce events!
 
-Don't start using it quite yet, the API will change a little.
+The API is almost stable now. If you start using it, expect only minor future pains.

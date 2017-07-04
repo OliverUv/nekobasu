@@ -1,7 +1,7 @@
 {
   "name": "nekobasu",
   "version": "0.2.0",
-  "description": "Configurable event bus that can buffer and reduce events",
+  "description": "Configurable and type safe event bus that can buffer and reduce events",
   "main": "./build/index.js",
   "types": "./build/index.d.ts",
   "scripts": {
@@ -24,7 +24,8 @@
     "event bus",
     "event",
     "buffer",
-    "reduce"
+    "reduce",
+    "autocompletion"
   ],
   "author": "Oliver Uvman <oliver@uvman.se> (http://vvv.uvman.se/)",
   "license": "Apache-2.0",
