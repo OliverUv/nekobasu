@@ -14,14 +14,13 @@
 
 import * as _ from 'lodash';
 
-import { create_neko, create_signal_neko } from './neko';
 import * as N from './interfaces';
 import * as EB from './builtin_event_buffers';
 import * as BI from './builtin';
 
-import * as event_buffers from './builtin_event_buffers';
+// Forced re-export
 import { ISimpleEvent } from 'strongly-typed-events';
-export { event_buffers, ISimpleEvent };
+export { ISimpleEvent };
 
 export function event_as_public<E>(eb:BI.BuiltinEventNeko<E>) {
   return {
@@ -48,9 +47,9 @@ export function merge_ebs<
   const b_keys = _.keys(b);
   const shared_key = _.find(a_keys, (ak) => _.includes(b_keys, ak));
   if (shared_key != undefined) {
-    throw new Error(`Attempted to merge two EventBuffer dictionaries with duplicate key ${shared_key}.`)
+    throw new Error(`Attempted to merge two EventBuffer dictionaries with duplicate key ${shared_key}.`);
   }
-  
+
   return {
     ...<any>a,
     ...<any>b,

@@ -17,20 +17,21 @@ import * as N from './interfaces';
 import * as EB from './builtin_event_buffers';
 
 import * as event_buffers from './builtin_event_buffers';
-export { event_buffers }
+export { event_buffers };
+
 import * as modify from './builtin_modifiers';
 export { modify };
 
 export interface BuiltinEventEventBuffers<E> {
-  immediate: EB.ImmediateBuffer<E>;
-  instrumented_last: EB.InstrumentedLastBuffer<E>;
-  last: EB.LastBuffer<E>;
-  list: EB.ListBuffer<E>;
+  immediate:EB.ImmediateBuffer<E>;
+  instrumented_last:EB.InstrumentedLastBuffer<E>;
+  last:EB.LastBuffer<E>;
+  list:EB.ListBuffer<E>;
 }
 
 export interface BuiltinSignalEventBuffers {
-  immediate: EB.ImmediateBuffer<undefined>;
-  count: EB.CountBuffer;
+  immediate:EB.ImmediateBuffer<undefined>;
+  count:EB.CountBuffer;
 }
 
 export interface BuiltinEventNeko<E> extends BuiltinEventEventBuffers<E>, N.Neko<E, keyof BuiltinEventEventBuffers<E>> {}
@@ -46,7 +47,7 @@ export function event_ebs<E>() {
 }
 
 export function event<E>() : BuiltinEventNeko<E> {
-  let eb_dict = event_ebs<E>();
+  const eb_dict = event_ebs<E>();
   return create_neko<E, typeof eb_dict>(eb_dict);
 }
 

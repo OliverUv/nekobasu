@@ -86,4 +86,3 @@ export interface Neko<E, N> extends BaseNeko<E, N> {
 export interface SignalNeko<N> extends BaseNeko<undefined, N> {
   send() : void;
 }
-

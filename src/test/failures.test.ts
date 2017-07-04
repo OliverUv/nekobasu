@@ -43,7 +43,6 @@ test(async function throws_on_reserved_name_use_neko(t) {
 test(async function throws_on_reserved_name_use_event_bus(t) {
   const event_buffer = nbus.builtin.event_buffers;
   const create_signal_neko = nbus.create_signal_neko;
-  const create_event_neko = nbus.create_neko;
 
   t.plan(1);
 
@@ -107,9 +106,9 @@ test(async function bad_custom_buffer(t) {
 
 test(async function duplicate_event_buffer_names_during_merge(t) {
   const dumb_buffers = {
-    immediate: <any>null, // will collide
-    no_problem: <any>null,
-    completely_fine: <any>null,
+    immediate: <any>undefined, // will collide
+    no_problem: <any>undefined,
+    completely_fine: <any>undefined,
   };
 
   t.plan(1);
