@@ -19,7 +19,7 @@ import * as nbus from '../';
 test(async function one_signal(t) {
   t.plan(1);
 
-  const event_bus = nbus.create({
+  const event_bus = nbus.event_bus.create({
     event_name: nbus.builtin.signal(),
   });
 
@@ -30,11 +30,11 @@ test(async function one_signal(t) {
 test(async function two_categories(t) {
   t.plan(2);
 
-  const event_bus = nbus.categorized_buses({
-    cat_one: nbus.create({
+  const event_bus = nbus.event_bus.categorized({
+    cat_one: nbus.event_bus.create({
       e_one: nbus.builtin.signal(),
     }),
-    cat_two: nbus.create({
+    cat_two: nbus.event_bus.create({
       e_two: nbus.builtin.signal(),
     }),
   });
@@ -49,7 +49,7 @@ test(async function two_categories(t) {
 test(async function two_signals(t) {
   t.plan(5);
 
-  const event_bus = nbus.create({
+  const event_bus = nbus.event_bus.create({
     first: nbus.builtin.signal(),
     second: nbus.builtin.signal(),
   });
@@ -82,7 +82,7 @@ test(async function two_signals(t) {
 test(async function lazy(t) {
   t.plan(0);
 
-  const event_bus = nbus.create({
+  const event_bus = nbus.event_bus.create({
     event_name: nbus.builtin.signal(),
   });
 
@@ -94,7 +94,7 @@ test(async function lazy(t) {
 test(async function flush_does_not_dispatches_without_feed(t) {
   t.plan(0);
 
-  const event_bus = nbus.create({
+  const event_bus = nbus.event_bus.create({
     event_name: nbus.builtin.signal(),
   });
 
@@ -107,7 +107,7 @@ test(async function flush_does_not_dispatches_without_feed(t) {
 test(async function clear(t) {
   t.plan(0);
 
-  const event_bus = nbus.create({
+  const event_bus = nbus.event_bus.create({
     sig: nbus.builtin.signal(),
     num: nbus.builtin.event<number>(),
   });
@@ -127,7 +127,7 @@ test(async function clear(t) {
 test(async function event_bus_clear_and_flush(t) {
   t.plan(1);
 
-  const event_bus = nbus.create({
+  const event_bus = nbus.event_bus.create({
     sig: nbus.builtin.signal(),
     num: nbus.builtin.event<number>(),
     num_two: nbus.builtin.event<number>(),
@@ -152,7 +152,7 @@ test(async function event_bus_clear_and_flush(t) {
 test(async function simple_event(t) {
   t.plan(4);
 
-  const event_bus = nbus.create({
+  const event_bus = nbus.event_bus.create({
     cool_numbers: nbus.builtin.event<number>(),
   });
 
@@ -169,7 +169,7 @@ test(async function simple_event(t) {
 test(async function builtin_instrumented_last(t) {
   t.plan(2);
 
-  const event_bus = nbus.create({
+  const event_bus = nbus.event_bus.create({
     cool_numbers: nbus.builtin.event<number>(),
   });
 
@@ -196,14 +196,14 @@ test(async function builtin_instrumented_last(t) {
 
 test(async function custom_buffer(t) {
   function doubler_buffer() {
-    return nbus.create_event_buffer<number>({
+    return nbus.event_buffer.create<number>({
       reducer: (acc, next) => acc + 2 * next,
         start_value: 0,
     });
   }
 
   function csv_buffer() {
-    return nbus.create_event_buffer<number, string, undefined>({
+    return nbus.event_buffer.create<number, string, undefined>({
       reducer: (acc, next) => {
         if (acc == undefined) {
           return next.toString();
@@ -220,15 +220,15 @@ test(async function custom_buffer(t) {
       csv: csv_buffer(),
     };
 
-    const buf_dict = nbus.builtin.modify.merge_ebs(
+    const buf_dict = nbus.util.merge_event_buffers(
       dumb_buffers,
       nbus.builtin.event_ebs<number>(),
     );
 
-    return nbus.create_neko<number, typeof buf_dict>(buf_dict);
+    return nbus.neko.create_for_event<number, typeof buf_dict>(buf_dict);
   }
 
-  const event_bus = nbus.create({
+  const event_bus = nbus.event_bus.create({
     my_numbers: neko_creator(),
     your_numbers: neko_creator(),
   });
@@ -236,12 +236,12 @@ test(async function custom_buffer(t) {
   t.plan(5);
 
   event_bus.my_numbers.immediate.sub(() => t.pass()); // 3
-  event_bus.my_numbers.csv.one((ev) => t.is(ev, '1,2,3')); // 1
-  event_bus.my_numbers.doubler.one((ev) => t.is(ev, 2 + 4 + 6)); // 1
+  event_bus.my_numbers.csv.one((ev) => t.is(ev, '1,2,3')); // 4
+  event_bus.my_numbers.doubler.one((ev) => t.is(ev, 2 + 4 + 6)); // 5
 
+  event_bus.your_numbers.immediate.sub(() => t.fail());
   event_bus.your_numbers.csv.sub(() => t.fail());
   event_bus.your_numbers.doubler.sub(() => t.fail());
-  event_bus.your_numbers.immediate.sub(() => t.fail());
 
   event_bus.my_numbers.send(1);
   event_bus.my_numbers.send(2);

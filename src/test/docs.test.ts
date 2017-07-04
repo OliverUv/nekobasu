@@ -30,8 +30,8 @@ test(async function multiple_buses_with_types_infered_from_factory_function(t) {
   t.plan(2);
 
   function create_bus() {
-    return nbus.categorized_buses({
-      big_cat_events: nbus.create({
+    return nbus.event_bus.categorized({
+      big_cat_events: nbus.event_bus.create({
         purr: nbus.builtin.signal(),
       }),
     });
@@ -54,8 +54,8 @@ test(async function multiple_buses_with_types_infered_from_factory_function(t) {
 });
 
 test(async function this_lib_is_not_clone_safe(t) {
-  const one = nbus.categorized_buses({
-    big_cat_events: nbus.create({
+  const one = nbus.event_bus.categorized({
+    big_cat_events: nbus.event_bus.create({
       purr: nbus.builtin.signal(),
     }),
   });

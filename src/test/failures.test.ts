@@ -17,9 +17,9 @@ import { test } from 'ava';
 import * as nbus from '../';
 
 test(async function throws_on_reserved_name_use_neko(t) {
-  const event_buffer = nbus.builtin.event_buffers;
-  const create_signal_neko = nbus.create_signal_neko;
-  const create_event_neko = nbus.create_neko;
+  const ebs = nbus.builtin.event_buffers;
+  const create_event_neko = nbus.neko.create_for_event;
+  const create_signal_neko = nbus.neko.create_for_signal;
 
   t.plan(6);
 
@@ -31,17 +31,17 @@ test(async function throws_on_reserved_name_use_neko(t) {
     }
   }
 
-  const signal_a = { send: event_buffer.immediate<undefined>() };
-  const signal_b = { flush: event_buffer.immediate<undefined>() };
-  const signal_c = { _meta: event_buffer.immediate<undefined>() };
+  const signal_a = { send: ebs.immediate<undefined>() };
+  const signal_b = { flush: ebs.immediate<undefined>() };
+  const signal_c = { _meta: ebs.immediate<undefined>() };
 
   ensure_throws('send', () => create_signal_neko<typeof signal_a>(signal_a))
   ensure_throws('flush', () => create_signal_neko<typeof signal_b>(signal_b))
   ensure_throws('_meta', () => create_signal_neko<typeof signal_c>(signal_c))
 
-  const event_a = { send: event_buffer.immediate<number>() };
-  const event_b = { flush: event_buffer.immediate<number>() };
-  const event_c = { _meta: event_buffer.immediate<number>() };
+  const event_a = { send: ebs.immediate<number>() };
+  const event_b = { flush: ebs.immediate<number>() };
+  const event_c = { _meta: ebs.immediate<number>() };
 
   ensure_throws('send', () => create_event_neko<number, typeof event_a>(event_a))
   ensure_throws('flush', () => create_event_neko<number, typeof event_b>(event_b))
@@ -49,30 +49,31 @@ test(async function throws_on_reserved_name_use_neko(t) {
 });
 
 test(async function throws_on_reserved_name_use_event_bus(t) {
-  const event_buffer = nbus.builtin.event_buffers;
-  const create_signal_neko = nbus.create_signal_neko;
+  const ebs = nbus.builtin.event_buffers;
+  const create_event_neko = nbus.neko.create_for_event;
+  const create_signal_neko = nbus.neko.create_for_signal;
 
   t.plan(1);
 
-  const signal_a = { whatever: event_buffer.immediate<undefined>() };
+  const signal_a = { whatever: ebs.immediate<undefined>() };
   const neko = create_signal_neko<typeof signal_a>(signal_a);
   const nekos = { _meta: neko };
 
   t.plan(1);
   try {
-    nbus.create<typeof nekos>(nekos);
+    nbus.event_bus.create<typeof nekos>(nekos);
   } catch (e) {
     t.regex(e.message, /_meta/);
   }
 });
 
 test(async function bad_custom_buffer(t) {
-  const doubler_buffer = nbus.create_event_buffer<number>({
+  const doubler_buffer = nbus.event_buffer.create<number>({
     reducer: (acc, next) => acc + 2 * next,
       start_value: 0,
   });
 
-  const csv_buffer = nbus.create_event_buffer<number, string, undefined>({
+  const csv_buffer = nbus.event_buffer.create<number, string, undefined>({
     reducer: (acc, next) => {
       if (acc == undefined) {
         return next.toString();
@@ -87,16 +88,16 @@ test(async function bad_custom_buffer(t) {
     csv: csv_buffer,
   };
 
-  const buf_dict = nbus.builtin.modify.merge_ebs(
+  const buf_dict = nbus.util.merge_event_buffers(
     dumb_buffers,
     nbus.builtin.event_ebs<number>(),
   );
 
   function neko_creator() {
-    return nbus.create_neko<number, typeof buf_dict>(buf_dict);
+    return nbus.neko.create_for_event<number, typeof buf_dict>(buf_dict);
   }
 
-  const event_bus = nbus.create({
+  const event_bus = nbus.event_bus.create({
     my_numbers: neko_creator(),
     your_numbers: neko_creator(),
   });
@@ -125,7 +126,7 @@ test(async function duplicate_event_buffer_names_during_merge(t) {
   t.plan(1);
 
   try {
-    const buf_dict = nbus.builtin.modify.merge_ebs(
+    const buf_dict = nbus.util.merge_event_buffers(
       dumb_buffers,
       nbus.builtin.event_ebs<number>(),
     );

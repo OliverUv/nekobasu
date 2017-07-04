@@ -50,7 +50,7 @@ export function create<ND extends N.NekoDict>(nekos:ND) : ND & N.EventBus<keyof 
   };
 }
 
-export function categorized_buses<EBD extends N.EventBusDict>(ebs:EBD) : EBD & N.EventCategories<keyof EBD> {
+export function categorized<EBD extends N.EventBusDict>(ebs:EBD) : EBD & N.EventCategories<keyof EBD> {
   const eb_names:(keyof EBD)[] = Object.keys(ebs);
 
   _.forEach(eb_names, (name) => {

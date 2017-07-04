@@ -22,7 +22,7 @@ const RESERVED_NAMES = [
   '_meta',
 ];
 
-export function create_neko<E, EBD extends N.EventBufferDict<E>>(buffers:EBD) : EBD & N.Neko<E, keyof EBD> {
+export function create_for_event<E, EBD extends N.EventBufferDict<E>>(buffers:EBD) : EBD & N.Neko<E, keyof EBD> {
   const buffer_names:(keyof EBD)[] = Object.keys(buffers);
   let current_buffer:keyof EBD | undefined;
 
@@ -77,7 +77,7 @@ export function create_neko<E, EBD extends N.EventBufferDict<E>>(buffers:EBD) : 
 // TODO Refactor create_signal_neko, it shares most of its implementation details with create_neko
 // TODO Don't create new clear, flush etc functions for each neko, let multiple nekos share these
 
-export function create_signal_neko<EBD extends N.EventBufferDict<undefined>>(buffers:EBD) : EBD & N.SignalNeko<keyof EBD> {
+export function create_for_signal<EBD extends N.EventBufferDict<undefined>>(buffers:EBD) : EBD & N.SignalNeko<keyof EBD> {
   const buffer_names:(keyof EBD)[] = Object.keys(buffers);
   let current_buffer:keyof EBD | undefined;
 

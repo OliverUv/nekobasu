@@ -12,15 +12,12 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
-import { create_neko, create_signal_neko } from './neko';
+import { create_for_event, create_for_signal } from './neko';
 import * as N from './interfaces';
 import * as EB from './builtin_event_buffers';
 
 import * as event_buffers from './builtin_event_buffers';
 export { event_buffers };
-
-import * as modify from './builtin_modifiers';
-export { modify };
 
 export interface BuiltinEventEventBuffers<E> {
   immediate:EB.ImmediateBuffer<E>;
@@ -48,7 +45,7 @@ export function event_ebs<E>() {
 
 export function event<E>() : BuiltinEventNeko<E> {
   const eb_dict = event_ebs<E>();
-  return create_neko<E, typeof eb_dict>(eb_dict);
+  return create_for_event<E, typeof eb_dict>(eb_dict);
 }
 
 export function signal() {
@@ -57,5 +54,5 @@ export function signal() {
     immediate: EB.immediate<undefined>(),
   };
 
-  return create_signal_neko<typeof eb_dict>(eb_dict);
+  return create_for_signal<typeof eb_dict>(eb_dict);
 }

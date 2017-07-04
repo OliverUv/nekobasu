@@ -22,7 +22,7 @@ import * as BI from './builtin';
 import { ISimpleEvent } from 'strongly-typed-events';
 export { ISimpleEvent };
 
-export function event_as_public<E>(eb:BI.BuiltinEventNeko<E>) {
+export function builtin_event_as_public<E>(eb:BI.BuiltinEventNeko<E>) {
   return {
     immediate: <ISimpleEvent<E>>eb.immediate,
     instrumented_last: <ISimpleEvent<EB.InstrumentedLast<E>>>eb.instrumented_last,
@@ -31,14 +31,14 @@ export function event_as_public<E>(eb:BI.BuiltinEventNeko<E>) {
   };
 }
 
-export function signal_as_public(eb:BI.BuiltinSignalNeko) {
+export function builtin_signal_as_public(eb:BI.BuiltinSignalNeko) {
   return {
     immediate: <ISimpleEvent<undefined>>eb.immediate,
     count: <ISimpleEvent<number>>eb.count,
   };
 }
 
-export function merge_ebs<
+export function merge_event_buffers<
     E,
     A extends N.EventBufferDict<E>,
     B extends N.EventBufferDict<E>

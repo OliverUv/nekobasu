@@ -77,6 +77,6 @@ export class EventBufferImpl<E, R=E, S=R> extends SimpleEventDispatcher<R> imple
   }
 }
 
-export function create_event_buffer<E, R=E, S=R>(spec:N.EventBufferSpec<E, R, S>) : N.EventBuffer<E, R> {
+export function create<E, R=E, S=R>(spec:N.EventBufferSpec<E, R, S>) : N.EventBuffer<E, R> {
   return new EventBufferImpl<E, R, S>(spec);
 }

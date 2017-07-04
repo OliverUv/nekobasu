@@ -13,9 +13,17 @@
 // limitations under the License.
 
 import * as builtin from './builtin';
+import * as event_buffer from './event_buffer';
+import * as event_bus from './event_bus';
+import * as interfaces from './interfaces';
+import * as neko from './neko';
+import * as util from './util';
 
-export * from './event_buffer';
-export * from './event_bus';
-export * from './interfaces';
-export * from './neko';
-export { builtin };
+export {
+  builtin,
+  event_buffer,
+  event_bus,
+  interfaces,
+  neko,
+  util,
+};
