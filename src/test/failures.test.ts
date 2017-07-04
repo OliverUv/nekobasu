@@ -35,22 +35,21 @@ test(async function throws_on_reserved_name_use_neko(t) {
   const signal_b = { flush: ebs.immediate<undefined>() };
   const signal_c = { _meta: ebs.immediate<undefined>() };
 
-  ensure_throws('send', () => create_signal_neko<typeof signal_a>(signal_a))
-  ensure_throws('flush', () => create_signal_neko<typeof signal_b>(signal_b))
-  ensure_throws('_meta', () => create_signal_neko<typeof signal_c>(signal_c))
+  ensure_throws('send', () => create_signal_neko<typeof signal_a>(signal_a));
+  ensure_throws('flush', () => create_signal_neko<typeof signal_b>(signal_b));
+  ensure_throws('_meta', () => create_signal_neko<typeof signal_c>(signal_c));
 
   const event_a = { send: ebs.immediate<number>() };
   const event_b = { flush: ebs.immediate<number>() };
   const event_c = { _meta: ebs.immediate<number>() };
 
-  ensure_throws('send', () => create_event_neko<number, typeof event_a>(event_a))
-  ensure_throws('flush', () => create_event_neko<number, typeof event_b>(event_b))
-  ensure_throws('_meta', () => create_event_neko<number, typeof event_c>(event_c))
+  ensure_throws('send', () => create_event_neko<number, typeof event_a>(event_a));
+  ensure_throws('flush', () => create_event_neko<number, typeof event_b>(event_b));
+  ensure_throws('_meta', () => create_event_neko<number, typeof event_c>(event_c));
 });
 
 test(async function throws_on_reserved_name_use_event_bus(t) {
   const ebs = nbus.builtin.event_buffers;
-  const create_event_neko = nbus.neko.create_for_event;
   const create_signal_neko = nbus.neko.create_for_signal;
 
   t.plan(1);
@@ -126,7 +125,7 @@ test(async function duplicate_event_buffer_names_during_merge(t) {
   t.plan(1);
 
   try {
-    const buf_dict = nbus.util.merge_event_buffers(
+    nbus.util.merge_event_buffers(
       dumb_buffers,
       nbus.builtin.event_ebs<number>(),
     );
