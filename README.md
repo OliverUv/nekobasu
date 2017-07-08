@@ -19,18 +19,18 @@ neko.immediate.sub((n) => console.log(`immediate ${n}`));
 neko.last.sub((n) => console.log(`last ${n}`));
 neko.list.sub((n) => console.log(`list ${n}`));
 
-neko.send(1); // immediate 1
-neko.send(2); // immediate 2
-neko.send(3); // immediate 3
+neko.send(1); // prints "immediate 1"
+neko.send(2); // prints "immediate 2"
+neko.send(3); // prints "immediate 3"
 
-neko.flush(); // last 3 and list [1, 2, 3]
+neko.flush(); // prints "last 3" and "list [ 1, 2, 3 ]", in undefined order
 ```
 
 TypeScript can infer all types used, so you get complete auto completion and the assurance that your event handlers know which arguments to expect. The list handler above knows it's getting a list of numbers, and the last handler knows it'll get a single number.
 
 The event buffers all extend `SimpleEventDispatcher` from the [Strongly-Typed-Events-for-TypeScript](Strongly-Typed-Events-for-TypeScript) library.
 
-You can just nekos if you want, they work fine by themselves. This is how you would create an event bus:
+You can use only plain nekos if you want, they work fine by themselves. This is how you would create an event bus:
 
 ```typescript
 let event_bus = nbus.event_bus.create({
