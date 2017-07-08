@@ -4,7 +4,11 @@ Auto completion friendly library for configurable and type safe event buses with
 
 This library lets you construct event buses. An event bus consists of a number of "nekos". A neko can receive an event of some type. It will then feed this event to each of its event buffers, which listeners can subscribe to. A buffer can dispatch, buffer, and reduce events.
 
-You can build your own event buffers and nekos. The library also comes with some built in. Lets look at an example:
+You can build your own event buffers and nekos. The library also comes with some built in.
+
+# Basic usage
+
+Lets look at an example:
 
 ```typescript
 import * as nbus from 'nekobasu';
@@ -24,7 +28,7 @@ neko.flush(); // last 3 and list [1, 2, 3]
 
 TypeScript can infer all types used, so you get complete auto completion and the assurance that your event handlers know which arguments to expect. The list handler above knows it's getting a list of numbers, and the last handler knows it'll get a single number.
 
-The event buffers all extend `SimpleEventDispatcher` from the [https://github.com/KeesCBakker/Strongly-Typed-Events-for-TypeScript](Strongly-Typed-Events-for-TypeScript) library.
+The event buffers all extend `SimpleEventDispatcher` from the [Strongly-Typed-Events-for-TypeScript](Strongly-Typed-Events-for-TypeScript) library.
 
 You can just nekos if you want, they work fine by themselves. This is how you would create an event bus:
 
@@ -73,10 +77,10 @@ let event_bus = nbus.event_bus.categorized({
 // nekos, the categorized event bus container will let you call
 // flush and clear on all event buses.
 
-event_bus.._meta.clear();
+event_bus._meta.clear();
 ```
 
-In addition to the builtin event neko, there's a built in signal neko. This is basically an `event<undefined>` neko, but with a patched `send` function so that you can just call `send()` instead of `send({})`. It comes with the `immediate` and `count` event buffers.
+In addition to the builtin event neko, there's a built in signal neko. This is basically a `builtin.event<undefined>` neko, but with a patched `send` function so that you can just call `send()` instead of `send({})`. It comes with the `immediate` and `count` event buffers.
 
 ```typescript
 import * as nbus from 'nekobasu';
@@ -91,6 +95,58 @@ neko.send(); // immediate
 neko.send(); // immediate
 
 neko.flush(); // count 3
+```
+
+## Public Bus
+
+Want to create a reference to your bus that will only allow listening for but not sending events? Sadly, it doesn't seem like TypeScript's type system will let us create a general function to do this. You'll need to do it manually for each event bus you create. If you're using the builtin nekos, some convenience is provided. Otherwise, you'll need to do some manual work. See the [util file](src/util.ts) to see how it's done.
+
+Here's how to do it with builtin nekos:
+
+```typescript
+  const event_bus = nbus.event_bus.categorized({
+
+    system: nbus.event_bus.create({
+      error: nbus.builtin.event<Catastrophe>(),
+    }),
+
+    runtime: nbus.event_bus.create({
+      we_get: nbus.builtin.signal(),
+    }),
+    
+    data: nbus.event_bus.create({
+      parse_result: nbus.builtin.event<ParseResult>(),
+    }),
+
+  });
+
+  function get_public_bus() {
+    const pub_ev = nbus.util.builtin_event_as_public;
+    const pub_sig = nbus.util.builtin_signal_as_public;
+
+    return {
+
+      system: {
+        error: pub_sv(event_bus.system.error),
+      },
+
+      runtime: {
+        we_get: pub_sig(event_bus.runtime.we_get),
+      },
+
+      data: {
+        parse_result: pub_ev(event_bus.data.parse_result),
+      },
+
+    };
+  }
+
+  const public_bus = get_public_bus();
+  // Note that only the types have changed. We didn't actually create
+  // any new objects with fewer properties. If your public bus consumer
+  // is JS, not TS, you'll want to write your own functions to strip
+  // away all mutating functions. However, since you don't need to care
+  // about the type system at that point, it should be easy.
 ```
 
 ## Advanced usage
@@ -109,10 +165,15 @@ You can also ensure that a neko will only send events to a single event buffer u
 
 ## Future
 
-Hope to work on a method for logging/tracking events, to mitigate the difficulties that event spaghetti often causes in large apps.
+Hope to work on:
+
+* A method for logging/tracking events, to mitigate the difficulties that event spaghetti often causes in large apps.
+* A non-typesafe convenience function for creating public event buses for non-TS consumers.
 
 ## Meta
 
 * Requires TypeScript 2.3 or higher (uses generic parameter defaults and `keyof`)
+* I mean you technically can use this lib even if you're just writing JS but without the auto completion it's not much better than the stringly typed Event Emitter stuff that's popular these days. Though if you do misspell an event name, you'll get a nice undefined value exception with nekobasu, instead of a hard to debug missing event.
 * See LICENSE file for license (Apache 2.0. You may also ask Oliver Uvman for a GPLv2 compatible license.)
 * See CONTRIBUTING for contributor's agreement (You grant Apache 2.0 and you allow Oliver Uvman to redistribute under any GPLv2 compatible license)
+* I'd like to thank my mom & dad and whatever type inference algorithm TS uses. Love you forever.
