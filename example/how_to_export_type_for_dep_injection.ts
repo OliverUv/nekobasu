@@ -14,9 +14,8 @@
 
 import * as nbus from 'nekobasu';
 
-// To export your Event Bus' type, you have to import and export many (all?)
-// of the nekobasu types that make it up. TypeScript requires this for some
-// reason.
+// To export your Event Bus' type, you have to import many (all?) of the
+// nekobasu types that make it up. TypeScript requires this for some reason.
 
 import {
   EventBuffer,
@@ -26,7 +25,7 @@ import {
   SignalNeko
 } from 'nekobasu/build/interfaces';
 import {
-  ISimpleEvent,
+  ISimpleEvent, // nekobasu re-exports this type from 'Strongly-Typed-Events-for-TypeScript'
 } from 'nekobasu/build/builtin_modifiers';
 import {
   BuiltinEventNeko,
@@ -34,17 +33,6 @@ import {
 import {
   InstrumentedLast
 } from 'nekobasu/build/builtin_event_buffers';
-
-export {
-  EventBuffer,
-  EventBus,
-  EventCategories,
-  InstrumentedLast,
-  BuiltinEventNeko,
-  Neko,
-  SignalNeko,
-  ISimpleEvent,
-};
 
 export function get_bus() {
   return nbus.event_bus.categorized({
@@ -54,10 +42,9 @@ export function get_bus() {
   });
 }
 
-// This bus is only created to help us export the type.
-// We want the creation of the real/used event bus
-// to be contained within the function, so that we
-// can create multiple event buses if needed.
+// This bus is only created to help us export the type. We want the creation of
+// the real/used event bus to be contained within the function, so that we can
+// create multiple independent event buses if needed.
 //
 // See https://github.com/Microsoft/TypeScript/issues/6606
 // for progress on how this hack could be avoided.
