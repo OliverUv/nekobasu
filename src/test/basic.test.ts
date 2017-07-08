@@ -174,7 +174,6 @@ test(async function builtin_instrumented_last(t) {
     cool_numbers: nbus.builtin.event<number>(),
   });
 
-  // event_bus.cool_numbers.instrumented_last.one((ev) => console.log(ev));
   event_bus.cool_numbers.instrumented_last.one((ev) => t.deepEqual(ev, {
     last_event: 10,
     n_events_fired: 2,
@@ -196,14 +195,23 @@ test(async function builtin_instrumented_last(t) {
 });
 
 test(async function custom_buffer(t) {
+  // When creating event buffers and nekos, it's often necessary to specify
+  // which types they are for. You can of course create event buffers and neko
+  // creators for generic types, as this library does (see src/builtin.ts and
+  // src/builtin_event_buffers.ts
+
   function doubler_buffer() {
     return nbus.event_buffer.create<number>({
       reducer: (acc, next) => acc + 2 * next,
-        start_value: 0,
+      start_value: 0,
     });
   }
 
   function csv_buffer() {
+    // Generic parameter types:
+    // * Event
+    // * Reduced value & value to dispatch
+    // * Initial value for reducer
     return nbus.event_buffer.create<number, string, undefined>({
       reducer: (acc, next) => {
         if (acc == undefined) {
