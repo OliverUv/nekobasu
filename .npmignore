@@ -15,13 +15,17 @@ tags
 node_modules/
 yarn.lock
 tslint.json
+.npmignore
+CONTRIBUTING
+release.tsconfig.json
+tsconfig.json
 
 # logfiles
 *.log
 .idea/
 
-# Ignore test source and artifacts
-src/test/
+# Ignore source and test artifacts
+src/
 build/test/
 
 # ignore instructional files
