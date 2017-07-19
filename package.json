@@ -1,12 +1,12 @@
 {
   "name": "nekobasu",
-  "version": "0.2.1",
+  "version": "0.3.0",
   "description": "Configurable and type safe event bus that can buffer and reduce events",
   "main": "./build/index.js",
   "types": "./build/index.d.ts",
   "scripts": {
     "clean": "rm -rf ./build",
-    "build": "tsc --project tsconfig.json",
+    "release_build": "npm run clean && tsc --noEmitOnError --project release.tsconfig.json",
     "dev_build": "tsc --watch --pretty --noEmitOnError",
     "lint": "tslint --type-check --project tsconfig.json",
     "lint_fix": "tslint --fix --type-check --project tsconfig.json",
