@@ -37,13 +37,19 @@ export function create_for_event<E, EBD extends N.EventBufferDict<E>>(buffers:EB
       buffers[current_buffer].feed(event);
       return;
     }
-    _.forEach(buffer_names, (buf_name) => buffers[buf_name].feed(event));
+    for (let i = 0; i < buffer_names.length; i++) {
+      buffers[buffer_names[i]].feed(event);
+    }
   }
   function clear() {
-    _.forEach(buffer_names, (buf_name) => buffers[buf_name].clear());
+    for (let i = 0; i < buffer_names.length; i++) {
+      buffers[buffer_names[i]].clear();
+    }
   }
   function flush() {
-    _.forEach(buffer_names, (buf_name) => buffers[buf_name].flush());
+    for (let i = 0; i < buffer_names.length; i++) {
+      buffers[buffer_names[i]].flush();
+    }
   }
   function use_single_buffer(buffer_name:keyof EBD) : void {
     clear();
@@ -88,17 +94,23 @@ export function create_for_signal<EBD extends N.EventBufferDict<undefined>>(buff
   });
 
   function clear() {
-    _.forEach(buffer_names, (buf_name) => buffers[buf_name].clear());
+    for (let i = 0; i < buffer_names.length; i++) {
+      buffers[buffer_names[i]].clear();
+    }
   }
   function flush() {
-    _.forEach(buffer_names, (buf_name) => buffers[buf_name].flush());
+    for (let i = 0; i < buffer_names.length; i++) {
+      buffers[buffer_names[i]].flush();
+    }
   }
   function send() : void {
     if (current_buffer != undefined) {
       buffers[current_buffer].feed(undefined);
       return;
     }
-    _.forEach(buffer_names, (buf_name) => buffers[buf_name].feed(undefined));
+    for (let i = 0; i < buffer_names.length; i++) {
+      buffers[buffer_names[i]].feed(undefined);
+    }
   }
   function use_single_buffer(buffer_name:keyof EBD) : void {
     clear();

@@ -30,11 +30,15 @@ export function create<ND extends N.NekoDict>(nekos:ND) : ND & N.EventBus<keyof 
   });
 
   function clear() {
-    _.forEach(neko_names, (n) => { nekos[n]._meta.clear(); });
+    for (let i = 0; i < neko_names.length; i++) {
+      nekos[neko_names[i]]._meta.clear();
+    }
   }
 
   function flush() {
-    _.forEach(neko_names, (n) => { nekos[n].flush(); });
+    for (let i = 0; i < neko_names.length; i++) {
+      nekos[neko_names[i]].flush();
+    }
   }
 
   const event_bus:N.EventBus<keyof ND> = {
@@ -60,11 +64,15 @@ export function categorized<EBD extends N.EventBusDict>(ebs:EBD) : EBD & N.Event
   });
 
   function clear() {
-    _.forEach(eb_names, (n) => { ebs[n]._meta.clear(); });
+    for (let i = 0; i < eb_names.length; i++) {
+      ebs[eb_names[i]]._meta.clear();
+    }
   }
 
   function flush() {
-    _.forEach(eb_names, (n) => { ebs[n]._meta.flush(); });
+    for (let i = 0; i < eb_names.length; i++) {
+      ebs[eb_names[i]]._meta.flush();
+    }
   }
 
   const event_bus:N.EventCategories<keyof EBD> = {
