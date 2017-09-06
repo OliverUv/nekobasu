@@ -1,6 +1,6 @@
 {
   "name": "nekobasu",
-  "version": "0.3.0",
+  "version": "0.3.1",
   "description": "Configurable and type safe event bus that can buffer and reduce events",
   "main": "./build/index.js",
   "types": "./build/index.d.ts",
