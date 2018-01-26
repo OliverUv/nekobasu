@@ -12,7 +12,7 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
-import * as _ from 'lodash';
+import _cloneDeep = require('lodash/cloneDeep');
 import {
   SimpleEventDispatcher,
 } from 'strongly-typed-events';
@@ -57,7 +57,7 @@ export class EventBufferImpl<E, R=E, S=R> extends SimpleEventDispatcher<R> imple
     if ((<any>this)._subscriptions.length == 0) { return; }
     if (this.dirty == false) {
       this.reduced_value = this.spec.reducer(
-          _.cloneDeep(this.spec.start_value),
+          _cloneDeep(this.spec.start_value),
           event);
     } else {
       this.reduced_value = this.spec.reducer(

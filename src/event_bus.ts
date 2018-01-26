@@ -12,7 +12,7 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
-import * as _ from 'lodash';
+import _includes = require('lodash/includes');
 
 import * as N from './interfaces';
 
@@ -23,11 +23,12 @@ const RESERVED_NAMES = [
 export function create<ND extends N.NekoDict>(nekos:ND) : ND & N.EventBus<keyof ND> {
   const neko_names:(keyof ND)[] = Object.keys(nekos);
 
-  _.forEach(neko_names, (n_name) => {
-    if (_.includes(RESERVED_NAMES, n_name)) {
+  for (let i = 0; i < neko_names.length; i++) {
+    const n_name = neko_names[i];
+    if (_includes(RESERVED_NAMES, n_name)) {
       throw new Error(`Must not use the reserved name "${n_name}" as a buffer name.`);
     }
-  });
+  }
 
   function clear() {
     for (let i = 0; i < neko_names.length; i++) {
@@ -57,11 +58,12 @@ export function create<ND extends N.NekoDict>(nekos:ND) : ND & N.EventBus<keyof 
 export function categorized<EBD extends N.EventBusDict>(ebs:EBD) : EBD & N.EventCategories<keyof EBD> {
   const eb_names:(keyof EBD)[] = Object.keys(ebs);
 
-  _.forEach(eb_names, (name) => {
-    if (_.includes(RESERVED_NAMES, name)) {
+  for (let i = 0; i < eb_names.length; i++) {
+    const name = eb_names[i];
+    if (_includes(RESERVED_NAMES, name)) {
       throw new Error(`Must not use the reserved name "${name}" as an EventBus category name.`);
     }
-  });
+  }
 
   function clear() {
     for (let i = 0; i < eb_names.length; i++) {

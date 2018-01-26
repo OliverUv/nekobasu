@@ -12,7 +12,8 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
-import * as _ from 'lodash';
+import _find = require('lodash/find');
+import _includes = require('lodash/includes');
 
 import * as N from './interfaces';
 import * as EB from './builtin_event_buffers';
@@ -43,9 +44,9 @@ export function merge_event_buffers<
     A extends N.EventBufferDict<E>,
     B extends N.EventBufferDict<E>
     > (a:A, b:B) : A & B {
-  const a_keys = _.keys(a);
-  const b_keys = _.keys(b);
-  const shared_key = _.find(a_keys, (ak) => _.includes(b_keys, ak));
+  const a_keys = Object.keys(a);
+  const b_keys = Object.keys(b);
+  const shared_key = _find(a_keys, (ak) => _includes(b_keys, ak));
   if (shared_key != undefined) {
     throw new Error(`Attempted to merge two EventBuffer dictionaries with duplicate key ${shared_key}.`);
   }

@@ -12,7 +12,7 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
-import * as _ from 'lodash';
+import _includes = require('lodash/includes');
 
 import * as N from './interfaces';
 
@@ -26,11 +26,12 @@ export function create_for_event<E, EBD extends N.EventBufferDict<E>>(buffers:EB
   const buffer_names:(keyof EBD)[] = Object.keys(buffers);
   let current_buffer:keyof EBD | undefined;
 
-  _.forEach(buffer_names, (eb_name) => {
-    if (_.includes(RESERVED_NAMES, eb_name)) {
+  for (let i = 0; i < buffer_names.length; i++) {
+    const eb_name = buffer_names[i];
+    if (_includes(RESERVED_NAMES, eb_name)) {
       throw new Error(`Must not use the reserved name "${eb_name}" as a buffer name.`);
     }
-  });
+  }
 
   function send(event:E) : void {
     if (current_buffer != undefined) {
@@ -87,11 +88,12 @@ export function create_for_signal<EBD extends N.EventBufferDict<undefined>>(buff
   const buffer_names:(keyof EBD)[] = Object.keys(buffers);
   let current_buffer:keyof EBD | undefined;
 
-  _.forEach(buffer_names, (b_name) => {
-    if (_.includes(RESERVED_NAMES, b_name)) {
+  for (let i = 0; i < buffer_names.length; i++) {
+    const b_name = buffer_names[i];
+    if (_includes(RESERVED_NAMES, b_name)) {
       throw new Error(`Must not use the reserved name "${b_name}" as a buffer name.`);
     }
-  });
+  }
 
   function clear() {
     for (let i = 0; i < buffer_names.length; i++) {

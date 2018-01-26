@@ -12,7 +12,7 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
-import * as _ from 'lodash';
+import _cloneDeep = require('lodash/cloneDeep');
 import { test } from 'ava';
 
 import * as nbus from '../';
@@ -60,8 +60,8 @@ test(async function this_lib_is_not_clone_safe(t) {
     }),
   });
 
-  const two = _.cloneDeep(one);
-  const three = _.cloneDeep(one);
+  const two = _cloneDeep(one);
+  const three = _cloneDeep(one);
 
   t.plan(2);
 
