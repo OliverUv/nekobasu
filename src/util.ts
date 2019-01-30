@@ -12,9 +12,6 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
-import _find = require('lodash/find');
-import _includes = require('lodash/includes');
-
 import * as N from './interfaces';
 import * as EB from './builtin_event_buffers';
 import * as BI from './builtin';
@@ -46,13 +43,29 @@ export function merge_event_buffers<
     > (a:A, b:B) : A & B {
   const a_keys = Object.keys(a);
   const b_keys = Object.keys(b);
-  const shared_key = _find(a_keys, (ak) => _includes(b_keys, ak));
-  if (shared_key != undefined) {
-    throw new Error(`Attempted to merge two EventBuffer dictionaries with duplicate key ${shared_key}.`);
+
+  for (let i = 0; i < a_keys.length; i++) {
+    const a_key = a_keys[i];
+    for (let j = 0; j < b_keys.length; j++) {
+      const b_key = b_keys[j];
+      if (a_key == b_key) {
+        throw new Error(`Attempted to merge two EventBuffer dictionaries with duplicate key ${a_key}.`);
+      }
+    }
   }
 
   return {
     ...<any>a,
     ...<any>b,
   };
+}
+
+export function clone_deep<T>(o:T) : T {
+   let output:any;
+   output = Array.isArray(o) ? [] : {};
+   for (const key in o) {
+     const v = o[key];
+     output[key] = (typeof v === 'object') ? clone_deep(v) : v;
+   }
+   return output;
 }

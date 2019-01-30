@@ -1,6 +1,6 @@
 {
   "name": "nekobasu",
-  "version": "0.4.0",
+  "version": "1.0.0",
   "description": "Configurable and type safe event bus that can buffer and reduce events",
   "main": "./build/index.js",
   "types": "./build/index.d.ts",
@@ -38,8 +38,6 @@
     "typescript": "^2.4.1"
   },
   "dependencies": {
-    "@types/lodash": "^4.5.2",
-    "lodash": "^4.17.4",
     "strongly-typed-events": "^1.0.1"
   }
 }

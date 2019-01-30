@@ -12,20 +12,28 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
-import _includes = require('lodash/includes');
-
 import * as N from './interfaces';
 
 const RESERVED_NAMES = [
   '_meta',
 ];
 
+function name_is_reserved(name:string) {
+  for (let i = 0; i < RESERVED_NAMES.length; i++) {
+    const n = RESERVED_NAMES[i];
+    if (n === name) {
+      return true;
+    }
+  }
+  return false;
+}
+
 export function create<ND extends N.NekoDict>(nekos:ND) : ND & N.EventBus<keyof ND> {
   const neko_names:(keyof ND)[] = Object.keys(nekos);
 
   for (let i = 0; i < neko_names.length; i++) {
     const n_name = neko_names[i];
-    if (_includes(RESERVED_NAMES, n_name)) {
+    if (name_is_reserved(n_name)) {
       throw new Error(`Must not use the reserved name "${n_name}" as a buffer name.`);
     }
   }
@@ -60,7 +68,7 @@ export function categorized<EBD extends N.EventBusDict>(ebs:EBD) : EBD & N.Event
 
   for (let i = 0; i < eb_names.length; i++) {
     const name = eb_names[i];
-    if (_includes(RESERVED_NAMES, name)) {
+    if (name_is_reserved(name)) {
       throw new Error(`Must not use the reserved name "${name}" as an EventBus category name.`);
     }
   }

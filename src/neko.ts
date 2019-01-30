@@ -12,8 +12,6 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
-import _includes = require('lodash/includes');
-
 import * as N from './interfaces';
 
 const RESERVED_NAMES = [
@@ -22,13 +20,23 @@ const RESERVED_NAMES = [
   '_meta',
 ];
 
+function name_is_reserved(name:string) {
+  for (let i = 0; i < RESERVED_NAMES.length; i++) {
+    const n = RESERVED_NAMES[i];
+    if (n === name) {
+      return true;
+    }
+  }
+  return false;
+}
+
 export function create_for_event<E, EBD extends N.EventBufferDict<E>>(buffers:EBD) : EBD & N.Neko<E, keyof EBD> {
   const buffer_names:(keyof EBD)[] = Object.keys(buffers);
   let current_buffer:keyof EBD | undefined;
 
   for (let i = 0; i < buffer_names.length; i++) {
     const eb_name = buffer_names[i];
-    if (_includes(RESERVED_NAMES, eb_name)) {
+    if (name_is_reserved(eb_name)) {
       throw new Error(`Must not use the reserved name "${eb_name}" as a buffer name.`);
     }
   }
@@ -90,7 +98,7 @@ export function create_for_signal<EBD extends N.EventBufferDict<undefined>>(buff
 
   for (let i = 0; i < buffer_names.length; i++) {
     const b_name = buffer_names[i];
-    if (_includes(RESERVED_NAMES, b_name)) {
+    if (name_is_reserved(b_name)) {
       throw new Error(`Must not use the reserved name "${b_name}" as a buffer name.`);
     }
   }

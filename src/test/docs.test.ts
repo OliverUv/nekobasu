@@ -12,7 +12,6 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
-import _cloneDeep = require('lodash/cloneDeep');
 import { test } from 'ava';
 
 import * as nbus from '../';
@@ -49,33 +48,6 @@ test(async function multiple_buses_with_types_infered_from_factory_function(t) {
 
   one.big_cat_events.purr.immediate.sub(() => t.fail());
   three.big_cat_events.purr.immediate.sub(() => t.pass());
-
-  three.big_cat_events.purr.send();
-});
-
-test(async function this_lib_is_not_clone_safe(t) {
-  const one = nbus.event_bus.categorized({
-    big_cat_events: nbus.event_bus.create({
-      purr: nbus.builtin.signal(),
-    }),
-  });
-
-  const two = _cloneDeep(one);
-  const three = _cloneDeep(one);
-
-  t.plan(2);
-
-  // Should trigger, triggers
-  one.big_cat_events.purr.immediate.one(() => t.pass()); // 1 pass
-  // Should not trigger, does not trigger
-  two.big_cat_events.purr.immediate.sub(() => t.fail());
-
-  one.big_cat_events.purr.send();
-
-  // Should not trigger, but is triggered!!
-  one.big_cat_events.purr.immediate.sub(() => t.pass()); // 2 pass
-  // Should trigger, is not triggered
-  three.big_cat_events.purr.immediate.sub(() => t.fail());
 
   three.big_cat_events.purr.send();
 });
